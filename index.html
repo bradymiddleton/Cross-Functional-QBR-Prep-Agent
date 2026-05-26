@@ -7,68 +7,100 @@
     <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap');
-        .font-terminal { font-family: 'Fira Code', monospace; }
-        .tab-active { border-color: #3b82f6; color: #3b82f6; }
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* Custom Slate 900 base */
+        }
+        .font-terminal { 
+            font-family: 'Fira Code', monospace; 
+        }
+        
+        /* Custom Terminal Scrollbar styling */
+        #terminalScreen::-webkit-scrollbar, #canvasReportContent::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        #terminalScreen::-webkit-scrollbar-track, #canvasReportContent::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        #terminalScreen::-webkit-scrollbar-thumb, #canvasReportContent::-webkit-scrollbar-thumb {
+            background: rgba(71, 85, 105, 0.5);
+            border-radius: 3px;
+        }
+        #terminalScreen::-webkit-scrollbar-thumb:hover, #canvasReportContent::-webkit-scrollbar-thumb:hover {
+            background: rgba(100, 116, 139, 0.7);
+        }
+
+        /* Pure Terminal-Style Text Coloring for exact match */
+        .term-blue { color: #38bdf8; }
+        .term-cyan { color: #22d3ee; }
+        .term-yellow { color: #facc15; }
+        .term-green { color: #4ade80; }
+        .term-red { color: #f87171; }
+        .term-dim { color: #64748b; }
+        .term-bold { font-weight: 700; }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen antialiased selection:bg-blue-500 selection:text-white">
+<body class="text-slate-100 min-h-screen antialiased selection:bg-blue-500 selection:text-white pb-12">
 
     <div class="max-w-7xl mx-auto p-4 md:p-8">
-        <header class="border-b border-slate-700 pb-6 mb-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <header class="border-b border-slate-700/60 pb-6 mb-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
-                <div class="flex items-center gap-2 text-blue-400 font-bold tracking-widest text-xs uppercase">
-                    <span>⚡ Enterprise Workspace Deployment</span>
+                <div class="flex items-center gap-2 text-blue-400 font-bold tracking-widest text-xs uppercase mb-1">
+                    <span class="inline-block w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                    <span>Autonomous Workflow Enclave</span>
                 </div>
-                <h1 class="text-3xl font-black text-slate-50 tracking-tight mt-1">Middleton Finance Suite</h1>
-                <p class="text-slate-400 text-sm mt-0.5">Autonomous QBR Prep Agent Workflow Interface & Relational Analyzer</p>
+                <h1 class="text-3xl font-black text-slate-50 tracking-tight">Middleton Finance Suite</h1>
+                <p class="text-slate-400 text-sm mt-0.5">Sales Finance & Supply Chain · Quarterly Business Review Autonomous Analyst</p>
             </div>
-            <div class="bg-slate-800 rounded-xl border border-slate-700 p-3 flex items-center gap-4 text-xs font-mono">
+            <div class="bg-slate-800/90 rounded-xl border border-slate-700/80 p-3 flex items-center gap-4 text-xs font-terminal">
                 <div>
-                    <span class="text-slate-400 block">Agent Core Engine:</span>
+                    <span class="text-slate-400 block text-[10px] uppercase tracking-wider">Model Target:</span>
                     <span class="text-cyan-400 font-bold">claude-haiku-4-5-20251001</span>
                 </div>
-                <div class="w-px h-8 bg-slate-700"></div>
+                <div class="w-px h-8 bg-slate-700/60"></div>
                 <div>
-                    <span class="text-slate-400 block">DB Environment:</span>
-                    <span id="dbStatusBadge" class="text-amber-400 font-bold">Spinning Virtual SQLite Wasm...</span>
+                    <span class="text-slate-400 block text-[10px] uppercase tracking-wider">SQLite Context:</span>
+                    <span id="dbStatusBadge" class="text-amber-400 font-bold">Initializing virtual relational engines...</span>
                 </div>
             </div>
         </header>
 
-        <section class="bg-slate-800 rounded-2xl border border-slate-700/80 p-6 shadow-2xl mb-8">
-            <div class="flex items-center justify-between border-b border-slate-700 pb-3 mb-4">
-                <h2 class="text-sm uppercase tracking-wider font-bold text-slate-300 flex items-center gap-2">
-                    <span>🎛️</span> Runtime Parameters & Authentication
+        <section class="bg-slate-800/60 rounded-2xl border border-slate-700/60 p-6 shadow-2xl mb-8 backdrop-blur-sm">
+            <div class="flex items-center justify-between border-b border-slate-700/60 pb-3 mb-4">
+                <h2 class="text-xs uppercase tracking-wider font-bold text-slate-300 flex items-center gap-2 font-terminal">
+                    <span>🎛️</span> Controls & Runtime Environs
                 </h2>
                 <div class="flex items-center gap-3">
-                    <label class="inline-flex items-center cursor-pointer text-xs">
-                        <span class="mr-2 text-slate-400">Simulation Mode</span>
+                    <label class="inline-flex items-center cursor-pointer text-xs select-none">
+                        <span class="mr-2 text-slate-400 font-terminal text-[11px]">Local Virtual DB Execution</span>
                         <input type="checkbox" id="executionModeToggle" checked class="sr-only peer">
-                        <div class="w-9 h-5 bg-slate-600 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-500 relative"></div>
+                        <div class="w-9 h-5 bg-slate-700 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-900 after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-500 relative transition-all"></div>
                     </label>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="md:col-span-2">
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Anthropic Access Token / Gateway Proxy</label>
-                    <input type="password" id="anthropicKeyField" placeholder="sk-ant-... (or custom routing middleware address)" 
-                           class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-blue-500 font-terminal">
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 font-terminal">Anthropic API Token Target</label>
+                    <input type="password" id="anthropicKeyField" placeholder="export ANTHROPIC_API_KEY=sk-ant-..."
+                           class="w-full bg-slate-950 border border-slate-700/70 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-terminal">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Business Unit Scope</label>
-                    <select id="buSelector" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-blue-500">
-                        <option value="GPUs" selected>GPUs (Graphics Engine Group)</option>
-                        <option value="CPUs">CPUs (Compute Core Platforms)</option>
-                        <option value="Embedded">Embedded Solutions</option>
-                        <option value="Semi-Custom">Semi-Custom Systems</option>
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 font-terminal">Business Unit Selection (--bu)</label>
+                    <select id="buSelector" class="w-full bg-slate-950 border border-slate-700/70 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-terminal">
+                        <option value="GPUs" selected>GPUs</option>
+                        <option value="CPUs">CPUs</option>
+                        <option value="Embedded">Embedded</option>
+                        <option value="Semi-Custom">Semi-Custom</option>
                         <option value="Adaptive Computing">Adaptive Computing</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">Reporting Target Horizon</label>
-                    <select id="quarterSelector" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-blue-500">
+                    <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 font-terminal">Target Horizon (--quarter)</label>
+                    <select id="quarterSelector" class="w-full bg-slate-950 border border-slate-700/70 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-terminal">
                         <option value="Q1 2024">Q1 2024</option>
                         <option value="Q2 2024">Q2 2024</option>
                         <option value="Q3 2024">Q3 2024</option>
@@ -77,11 +109,11 @@
                 </div>
             </div>
 
-            <div class="mt-6 pt-4 border-t border-slate-700 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <span id="networkWarningContext" class="text-xs text-amber-400/90 max-w-2xl">
-                    ⚠️ <strong>Simulation Mode Active:</strong> Bypasses browser CORS policy restrictions by executing the exact 8-tool sequence directly on the browser's virtual relational database layer.
+            <div class="mt-6 pt-4 border-t border-slate-700/60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <span id="networkWarningContext" class="text-xs text-amber-400/90 font-terminal">
+                    ⚠️ <strong>Simulation Mode Active:</strong> Bypasses typical client-side networking cross-origin walls by evaluating structural tables natively using cross-compiled WebAssembly.
                 </span>
-                <button onclick="triggerAutonomousPipeline()" id="runPipelineBtn" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold tracking-wide px-6 py-2.5 rounded-xl transition shadow-lg shrink-0">
+                <button onclick="triggerAutonomousPipeline()" id="runPipelineBtn" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold font-terminal uppercase tracking-wider px-6 py-3 rounded-xl transition duration-150 shadow-lg shrink-0">
                     Execute Agent Loop
                 </button>
             </div>
@@ -91,38 +123,24 @@
             
             <div class="lg:col-span-5 flex flex-col">
                 <div class="flex items-center justify-between mb-2 px-1">
-                    <span class="text-xs uppercase tracking-wider font-bold text-slate-400">Agent Thread Telemetry</span>
-                    <span id="toolExecutionCounter" class="text-[11px] font-terminal bg-slate-800 text-cyan-400 px-2 py-0.5 border border-slate-700 rounded-md">Stacked Logs: 0</span>
+                    <span class="text-xs uppercase tracking-wider font-bold text-slate-400 font-terminal">Agent Console Telemetry</span>
+                    <span id="toolExecutionCounter" class="text-[10px] font-terminal bg-slate-800 text-cyan-400 px-2 py-0.5 border border-slate-700 rounded-md">Logs: 0</span>
                 </div>
                 
-                <div id="terminalScreen" class="bg-slate-950 rounded-2xl p-4 border border-slate-800 h-[650px] overflow-y-auto text-xs font-terminal shadow-inner text-slate-300 space-y-2.5">
-                    <div class="text-slate-500 italic">// Awaiting initialization signal...</div>
+                <div id="terminalScreen" class="bg-slate-950 rounded-2xl p-5 border border-slate-800 h-[680px] overflow-y-auto text-[11px] font-terminal text-slate-300 space-y-1.5 shadow-inner">
+                    <div class="text-slate-600 italic">// Console ready. Awaiting trigger emission...</div>
                 </div>
             </div>
 
             <div class="lg:col-span-7 flex flex-col">
                 <div class="flex items-center justify-between mb-2 px-1">
-                    <span class="text-xs uppercase tracking-wider font-bold text-slate-400">Executive Briefing Output Canvas</span>
-                    <button onclick="exportToTextFile()" class="text-xs text-blue-400 hover:text-blue-300 font-medium">💾 Export Document (.txt)</button>
+                    <span class="text-xs uppercase tracking-wider font-bold text-slate-400 font-terminal">Final Document Output Viewer</span>
+                    <button onclick="exportToTextFile()" class="text-xs text-blue-400 hover:text-blue-300 font-medium font-terminal">💾 save_qbr() (.txt)</button>
                 </div>
 
-                <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-2xl h-[650px] overflow-y-auto text-slate-900">
-                    <div id="canvasHeaderFrame" class="hidden border-b-4 border-slate-900 pb-4 mb-6">
-                        <div class="text-[10px] uppercase font-black tracking-widest text-blue-600">Middleton Corporate Performance Engine Assessment</div>
-                        <h2 class="text-2xl font-black tracking-tight text-slate-900 mt-1">QUARTERLY BUSINESS REVIEW (DRAFT_V1)</h2>
-                        
-                        <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-600 bg-slate-50 p-3 rounded-xl border border-slate-200 mt-4">
-                            <div><strong>Target Sector:</strong> <span id="outBu">--</span></div>
-                            <div><strong>Financial Period:</strong> <span id="outQuarter">--</span></div>
-                            <div><strong>Generated By:</strong> Autonomous Anthropic Agent Loop</div>
-                            <div><strong>Security Status:</strong> <span class="bg-red-100 text-red-800 px-1.5 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider">Internal Eyes Only</span></div>
-                        </div>
-                    </div>
-
-                    <div id="canvasReportContent" class="prose max-w-none text-sm text-slate-700 space-y-6">
-                        <div class="flex flex-col items-center justify-center text-center h-96 text-slate-400 italic">
-                            <span>Compilation data package matrix structures render directly onto this page once tool execution concludes.</span>
-                        </div>
+                <div id="canvasReportContent" class="bg-slate-950 rounded-2xl border border-slate-800 p-6 h-[680px] overflow-y-auto font-terminal text-xs text-slate-300 shadow-2xl">
+                    <div class="flex flex-col items-center justify-center text-center h-full text-slate-600 italic">
+                        <span>// Run the agent loop to execute data retrieval pipelines and compile the final QBR draft document.</span>
                     </div>
                 </div>
             </div>
@@ -131,645 +149,732 @@
     </div>
 
     <script>
-        // System variables mirroring configuration defaults
+        // Mapping script global configurations identically
+        const MODEL = "claude-haiku-4-5-20251001";
         const GM_TARGETS = { "GPUs": 35.0, "CPUs": 38.0, "Embedded": 42.0, "Semi-Custom": 28.0, "Adaptive Computing": 40.0 };
-        const PLAN_DISC = 0.14; 
-        let dbInstance = null;
-        let compilationTargetOutputText = "";
+        const PLAN_DISC = 0.14;
+        
+        let dbPricing = null;
+        let dbDeals = null;
+        let dbChannel = null;
+        let dbCogs = null;
+        let dbInv = null;
+        let dbDemand = null;
+        
+        let rawTargetNarrativeOutputText = "";
 
-        // UI Event listeners for toggling execution modes cleanly
+        // UI Listener for clean routing state indication
         document.getElementById("executionModeToggle").addEventListener("change", (e) => {
-            const warnContext = document.getElementById("networkWarningContext");
+            const warningText = document.getElementById("networkWarningContext");
             if(e.target.checked) {
-                warnContext.innerHTML = `⚠️ <strong>Simulation Mode Active:</strong> Bypasses browser CORS policy restrictions by executing the exact 8-tool sequence directly on the browser's virtual relational database layer.`;
+                warningText.innerHTML = `⚠️ <strong>Simulation Mode Active:</strong> Bypasses typical client-side networking cross-origin walls by evaluating structural tables natively using cross-compiled WebAssembly.`;
             } else {
-                warnContext.innerHTML = `🌐 <strong>Network Routing Mode:</strong> Dispatches real pipeline payload configurations downstream to your configured gateway. Requires verified Anthropic access keys.`;
+                warningText.innerHTML = `🌐 <strong>Network Ingestion Mode:</strong> Forwards functional payloads down to the Anthropic direct API message stream. Requires a verified API Access Key.`;
             }
         });
 
-        // Initialize Virtual SQLite Environment utilizing WebAssembly workers
-        initVirtualSQLiteEnvironment();
+        // Initialize WebAssembly virtual file environment engines on frame load
+        initVirtualFileEnvironment();
 
-        async function initVirtualSQLiteEnvironment() {
+        async function initVirtualFileEnvironment() {
             try {
-                const config = { locateFile: filename => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/${filename}` };
-                const SQL = await initSqlJs(config);
-                dbInstance = new SQL.Database();
+                const initConfiguration = { locateFile: filename => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/${filename}` };
+                const SQL = await initSqlJs(initConfiguration);
                 
-                // Construct internal table architecture mirroring physical operational metrics databases
-                dbInstance.run(`
-                    CREATE TABLE transactions (quarter TEXT, product_category TEXT, net_revenue REAL, gross_margin_pct REAL, discount_rate REAL, plan_discount_rate REAL);
-                    CREATE TABLE quota_plan (quarter TEXT, quarterly_quota REAL);
-                    CREATE TABLE standard_vs_actual (category TEXT, quarter TEXT, month TEXT, total_cost_variance REAL, standard_unit_cost REAL, favorable INTEGER, supplier TEXT);
-                    CREATE TABLE margin_waterfall (category TEXT, quarter TEXT, month TEXT, net_revenue REAL, cogs_total REAL, gross_profit REAL, gross_margin_pct REAL, materials_cogs REAL, yield_loss_cogs REAL);
-                    CREATE TABLE inventory_positions (category TEXT, month TEXT, days_inventory_outstanding REAL, target_dio REAL, inventory_value REAL);
-                    CREATE TABLE forecast_accuracy (category TEXT, quarter TEXT, month TEXT, mape REAL, bias_pct REAL, under_forecast INTEGER, over_forecast INTEGER);
-                    CREATE TABLE deals (deal_id TEXT, deal_stage TEXT, net_deal_value REAL, gm_pct REAL, win_probability REAL, product_category TEXT);
-                    CREATE TABLE deal_scores (deal_id TEXT, recommendation TEXT);
-                    CREATE TABLE rep_performance (region TEXT, rep_name TEXT, quota_attainment_pct REAL);
-                `);
+                // Emulate distinct internal database file states cleanly as defined by structural constants
+                dbPricing = new SQL.Database();
+                dbDeals = new SQL.Database();
+                dbChannel = new SQL.Database();
+                dbCogs = new SQL.Database();
+                dbInv = new SQL.Database();
+                dbDemand = new SQL.Database();
 
-                // Ingest analytical baseline transaction records directly into the memory footprint
-                dbInstance.run(`
+                // Build accurate relational schema structures mirroring production footprints
+                dbPricing.run(`CREATE TABLE transactions (quarter TEXT, product_category TEXT, net_revenue REAL, gross_margin_pct REAL, discount_rate REAL, plan_discount_rate REAL);`);
+                dbChannel.run(`CREATE TABLE quota_plan (quarter TEXT, quarterly_quota REAL);`);
+                dbChannel.run(`CREATE TABLE rep_performance (region TEXT, rep_name TEXT, quota_attainment_pct REAL);`);
+                dbCogs.run(`CREATE TABLE standard_vs_actual (category TEXT, quarter TEXT, month TEXT, total_cost_variance REAL, standard_unit_cost REAL, favorable INTEGER, supplier TEXT);`);
+                dbCogs.run(`CREATE TABLE margin_waterfall (category TEXT, quarter TEXT, month TEXT, net_revenue REAL, cogs_total REAL, gross_profit REAL, gross_margin_pct REAL, materials_cogs REAL, yield_loss_cogs REAL);`);
+                dbInv.run(`CREATE TABLE inventory_positions (category TEXT, month TEXT, days_inventory_outstanding REAL, target_dio REAL, inventory_value REAL);`);
+                dbInv.run(`CREATE TABLE slow_movers (category TEXT, write_off_risk REAL, slow_mover_flag INTEGER);`);
+                dbDemand.run(`CREATE TABLE forecast_accuracy (category TEXT, quarter TEXT, month TEXT, mape REAL, bias_pct REAL, under_forecast INTEGER, over_forecast INTEGER);`);
+                dbDeals.run(`CREATE TABLE deals (deal_id TEXT, deal_stage TEXT, net_deal_value REAL, gm_pct REAL, win_probability REAL, product_category TEXT);`);
+                dbDeals.run(`CREATE TABLE deal_scores (deal_id TEXT, recommendation TEXT);`);
+
+                // Ingest baseline statistical operational metrics directly inside the database files
+                dbPricing.run(`
                     INSERT INTO transactions VALUES 
+                    ('Q1 2024', 'GPUs', 38000000, 0.362, 0.125, 0.14),
                     ('Q3 2024', 'GPUs', 41000000, 0.341, 0.142, 0.14),
                     ('Q4 2024', 'GPUs', 45200000, 0.324, 0.165, 0.14),
                     ('Q4 2024', 'CPUs', 32000000, 0.385, 0.138, 0.14);
-                    
-                    INSERT INTO quota_plan VALUES ('Q4 2024', 42500000);
-                    
-                    INSERT INTO standard_vs_actual VALUES 
-                    ('GPUs', 'Q4 2024', '2024-10', 220, 4200, 0, 'TSMC Fabrication (N4 Base)'),
-                    ('GPUs', 'Q4 2024', '2024-11', 310, 4200, 0, 'TSMC Fabrication (N4 Base)'),
-                    ('GPUs', 'Q4 2024', '2024-12', 180, 4200, 0, 'TSMC Fabrication (N4 Base)');
-                    
-                    INSERT INTO margin_waterfall VALUES 
-                    ('GPUs', 'Q4 2024', '2024-10', 14500000, 9800000, 4700000, 0.324, 6800000, 1800000),
-                    ('GPUs', 'Q4 2024', '2024-11', 15100000, 10200000, 4900000, 0.324, 7100000, 1900000),
-                    ('GPUs', 'Q4 2024', '2024-12', 15600000, 10550000, 5050000, 0.324, 7300000, 2100000);
-                    
-                    INSERT INTO inventory_positions VALUES ('GPUs', '2024-12', 54.2, 45.0, 22400000);
-                    
-                    INSERT INTO forecast_accuracy VALUES ('GPUs', 'Q4 2024', '2024-12', 0.146, -0.052, 1, 2);
-                    
-                    INSERT INTO deals VALUES 
-                    ('D1', 'Closed Won', 28500000, 0.322, 1.0, 'GPUs'),
-                    ('D2', 'Proposal/Quote', 18400000, 0.315, 0.65, 'GPUs'),
-                    ('D3', 'Validation', 12100000, 0.338, 0.35, 'GPUs');
-                    
-                    INSERT INTO deal_scores VALUES ('D1', 'Approve'), ('D2', 'Escalate'), ('D3', 'Approve');
-                    
+                `);
+                dbChannel.run(`INSERT INTO quota_plan VALUES ('Q4 2024', 42500000);`);
+                dbChannel.run(`
                     INSERT INTO rep_performance VALUES 
                     ('West', 'Mark Davis', 0.84), 
                     ('West', 'Linda Zhao', 0.89), 
                     ('West', 'Sarah Jenkins', 1.05);
                 `);
+                dbCogs.run(`
+                    INSERT INTO standard_vs_actual VALUES 
+                    ('GPUs', 'Q4 2024', '2024-10', 2.20, 110.00, 0, 'TSMC Foundry Fabrication N4'),
+                    ('GPUs', 'Q4 2024', '2024-11', 3.10, 110.00, 0, 'TSMC Foundry Fabrication N4'),
+                    ('GPUs', 'Q4 2024', '2024-12', 1.80, 110.00, 0, 'TSMC Foundry Fabrication N4');
+                `);
+                dbCogs.run(`
+                    INSERT INTO margin_waterfall VALUES 
+                    ('GPUs', 'Q4 2024', '2024-12', 45200000, 30555200, 14644800, 0.324, 19860880, 10694320);
+                `);
+                dbInv.run(`INSERT INTO inventory_positions VALUES ('GPUs', '2024-12', 54.2, 45.0, 22400000);`);
+                dbInv.run(`INSERT INTO slow_movers VALUES ('GPUs', 2400000, 14);`);
+                dbDemand.run(`INSERT INTO forecast_accuracy VALUES ('GPUs', 'Q4 2024', '2024-12', 0.146, -0.052, 1, 4);`);
+                dbDeals.run(`
+                    INSERT INTO deals VALUES 
+                    ('D1', 'Closed Won', 28500000, 0.322, 1.0, 'GPUs'),
+                    ('D2', 'Proposal/Quote', 18400000, 0.315, 0.65, 'GPUs'),
+                    ('D3', 'Validation', 12100000, 0.338, 0.35, 'GPUs');
+                `);
+                dbDeals.run(`INSERT INTO deal_scores VALUES ('D1', 'Approve'), ('D2', 'Escalate'), ('D3', 'Approve');`);
 
-                document.getElementById("dbStatusBadge").innerText = "SQLite Wasm Enlisted";
+                document.getElementById("dbStatusBadge").innerText = "Online · 6 Virtual Engines";
                 document.getElementById("dbStatusBadge").className = "text-emerald-400 font-bold";
-                printTerminalStream("// Virtual relational database cluster bound cleanly. System ready.", "text-slate-500 font-medium");
+                
+                // Show header splash exactly matching the console visual look
+                printTerminalSplashHeader();
             } catch (err) {
-                document.getElementById("dbStatusBadge").innerText = "Initialization Fault";
-                document.getElementById("dbStatusBadge").className = "text-rose-500 font-bold";
-                printTerminalStream(`!! Database compilation exception triggered: ${err.message}`, "text-rose-400");
+                document.getElementById("dbStatusBadge").innerText = "Fault Context Intercepted";
+                document.getElementById("dbStatusBadge").className = "text-rose-400 font-bold";
+                appendConsoleLine(`!! Exception tracking file structures inside WebAssembly: ${err.message}`, "term-red");
             }
         }
 
-        // Internal SQL executor tool proxy matching helper routing
-        function internalQueryDatabase(sqlExpression, parameterBinds = []) {
-            if (!dbInstance) return [];
+        // Standardized SQLite execution abstraction helper logic matching python 'q()'
+        function q(dbHandle, sqlString, queryBinds = []) {
+            if (!dbHandle) return [];
             try {
-                const preparedStmt = dbInstance.prepare(sqlExpression);
-                preparedStmt.bind(parameterBinds);
-                const resultsMatrix = [];
-                while (preparedStmt.step()) {
-                    resultsMatrix.push(preparedStmt.getAsObject());
+                const activeStatement = dbHandle.prepare(sqlString);
+                activeStatement.bind(queryBinds);
+                const dataMatrix = [];
+                while (activeStatement.step()) {
+                    dataMatrix.push(activeStatement.getAsObject());
                 }
-                preparedStmt.free();
-                return resultsMatrix;
+                activeStatement.free();
+                return dataMatrix;
             } catch(ex) {
-                printTerminalStream(`!! SQL runtime interruption engine fault: ${ex.message}`, "text-rose-400");
+                appendConsoleLine(`!! SQLite Interruption: ${ex.message}`, "term-red");
                 return [];
             }
         }
 
-        function printTerminalStream(messageText, formattingColorClass = "text-slate-300") {
+        // Pure terminal terminal simulation logs appending engine
+        function appendConsoleLine(textString, styleClass = "") {
             const screen = document.getElementById("terminalScreen");
-            const stamp = new Date().toLocaleTimeString();
-            screen.innerHTML += `<div class="${formattingColorClass} opacity-95 tracking-wide leading-relaxed"><span class="text-slate-600 mr-2">[${stamp}]</span>${messageText}</div>`;
+            screen.innerHTML += `<div class="${styleClass} leading-relaxed tracking-normal whitespace-pre-wrap">${textString}</div>`;
             screen.scrollTop = screen.scrollHeight;
             
-            const logLinesCount = screen.children.length;
-            document.getElementById("toolExecutionCounter").innerText = `Stacked Logs: ${logLinesCount}`;
+            // Track logs count
+            document.getElementById("toolExecutionCounter").innerText = `Logs: ${screen.children.length}`;
+        }
+
+        function printTerminalSplashHeader() {
+            appendConsoleLine("═".repeat(72), "term-blue");
+            appendConsoleLine("  Middleton Finance Suite — QBR Prep Agent", "term-bold");
+            appendConsoleLine("  Autonomous Quarterly Business Review Analyst", "term-cyan");
+            appendConsoleLine("═".repeat(72), "term-blue");
+            appendConsoleLine("");
+            appendConsoleLine("  Model:   " + MODEL + "  (~$0.001/msg)", "term-bold");
+            appendConsoleLine("  Key:     export ANTHROPIC_API_KEY=sk-ant-...", "term-bold");
+            appendConsoleLine("  Get key: console.anthropic.com → API Keys", "term-bold");
+            appendConsoleLine("");
         }
 
         // =================================═══════════════════════
-        // THE 8 ORIGINAL PIPELINE TOOLS EMULATED VIA WEB DATA BASES
+        // THE 8 SYSTEM ANALYSIS PIPELINE TOOLS PORTED FROM PYTHON
         // =================================═══════════════════════
 
-        // Tool 1: Ingest business unit actuals
+        // Tool 1: Ingest category transaction performance baselines
         function get_actuals(business_unit, quarter = null) {
-            printTerminalStream(`[Tool 1/8] get_actuals executing parameters target: BU="${business_unit}", Quarter="${quarter || 'All'}"`, "text-amber-400 font-bold");
-            let clauses = [];
-            let parameters = [];
-            if(business_unit.toLowerCase() !== "all") { clauses.push("product_category = ?"); parameters.push(business_unit); }
-            if(quarter) { clauses.push("quarter = ?"); parameters.push(quarter); }
+            let whereClauses = [];
+            let bindParameters = [];
+            if (business_unit.toLowerCase() !== "all") {
+                whereClauses.push("product_category = ?");
+                bindParameters.push(business_unit);
+            }
+            if (quarter) {
+                whereClauses.push("quarter = ?");
+                bindParameters.push(quarter);
+            }
 
-            const conditionScaffolding = clauses.length ? `WHERE ${clauses.join(" AND ")}` : "";
-            const nativeQueryString = `
+            const conditionScaffolding = whereClauses.length ? `WHERE ${whereClauses.join(" AND ")}` : '';
+            const sql = `
                 SELECT quarter, product_category,
-                       ROUND(SUM(net_revenue)/1e6, 2)       AS net_rev_mm,
-                       ROUND(AVG(gross_margin_pct)*100, 2)  AS gm_pct,
-                       ROUND(AVG(discount_rate)*100, 2)      AS disc_pct,
-                       COUNT(*)                             AS n_transactions,
-                       ROUND(SUM(net_revenue)/COUNT(*), 0)  AS avg_deal_size
+                       ROUND(SUM(net_revenue)/1e6,2)        AS net_rev_mm,
+                       ROUND(AVG(gross_margin_pct)*100,2)   AS gm_pct,
+                       ROUND(AVG(discount_rate)*100,2)       AS disc_pct,
+                       COUNT(*)                              AS n_transactions,
+                       ROUND(SUM(net_revenue)/COUNT(*),0)   AS avg_deal_size
                 FROM transactions
                 ${conditionScaffolding}
                 GROUP BY quarter, product_category
                 ORDER BY quarter, net_rev_mm DESC
             `;
-            const databaseRows = internalQueryDatabase(nativeQueryString, parameters);
-            const absoluteSummedRevenue = databaseRows.reduce((runningSum, currentEntry) => runningSum + currentEntry.net_rev_mm, 0);
+            const rows = q(dbPricing, sql, bindParameters);
+            const total_rev = rows.reduce((acc, r) => acc + r.net_rev_mm, 0);
 
             return {
-                business_unit: business_unit,
-                quarter_filter: quarter || "All quarters",
-                actuals: databaseRows,
-                total_rev_mm: parseFloat(absoluteSummedRevenue.toFixed(2)),
-                n_rows: databaseRows.length
+                "business_unit": business_unit,
+                "quarter_filter": quarter || "All quarters",
+                "actuals":        rows,
+                "total_rev_mm":   parseFloat(total_rev.toFixed(2)),
+                "n_rows":         rows.length,
             };
         }
 
-        // Tool 2: Extract corporate roadmap planning figures
+        // Tool 2: Pull targeted roadmap planning criteria matrices
         function get_plan(business_unit) {
-            printTerminalStream(`[Tool 2/8] get_plan extraction parameters parsing for target BU="${business_unit}"`, "text-amber-400 font-bold");
-            const targetMargin = GM_TARGETS[business_unit] || 35.0;
-            
-            const databasePlanRows = internalQueryDatabase(`
-                SELECT product_category, ROUND(AVG(plan_discount_rate)*100, 2) AS plan_disc_pct 
-                FROM transactions GROUP BY product_category
+            let gm_target = 35.0;
+            if (business_unit !== "All") {
+                gm_target = GM_TARGETS[business_unit] || 35.0;
+            } else {
+                const values = Object.values(GM_TARGETS);
+                gm_target = parseFloat((values.reduce((a, b) => a + b, 0) / values.length).toFixed(1));
+            }
+
+            const plan_rows = q(dbPricing, `
+                SELECT product_category, ROUND(AVG(plan_discount_rate)*100,2) AS plan_disc_pct
+                FROM transactions GROUP BY product_category ORDER BY product_category
             `);
-            const matchedDiscount = databasePlanRows.find(r => r.product_category === business_unit)?.plan_disc_pct || (PLAN_DISC * 100);
             
-            const channelQuotas = internalQueryDatabase(`SELECT ROUND(SUM(quarterly_quota)/1e6, 2) AS quota_mm FROM quota_plan`);
-            const fixedTargetQuota = channelQuotas[0]?.quota_mm || 0;
+            let plan_disc = PLAN_DISC * 100;
+            const match = plan_rows.find(r => r.product_category === business_unit);
+            if (match) plan_disc = match.plan_disc_pct;
+
+            const quota_rows = q(dbChannel, `SELECT ROUND(SUM(quarterly_quota)/1e6,2) AS quarterly_quota_mm FROM quota_plan WHERE quarter='Q4 2024'`);
+            const quarterly_quota = quota_rows.length ? quota_rows[0].quarterly_quota_mm : 0;
 
             return {
-                business_unit: business_unit,
-                gm_target_pct: targetMargin,
-                plan_discount_pct: matchedDiscount,
-                quarterly_quota_mm: fixedTargetQuota,
-                scoring_thresholds: { auto_approve: 6.5, escalate: 5.0 }
+                "business_unit":       business_unit,
+                "gm_target_pct":       gm_target,
+                "plan_discount_pct":   plan_disc,
+                "quarterly_quota_mm":  quarterly_quota,
+                "scoring_thresholds":  { "auto_approve": 6.5, "escalate": 5.0 }
             };
         }
 
-        // Tool 3: Isolate financial deltas and variances
+        // Tool 3: Map variances across absolute accounting layers
         function identify_variances(business_unit, quarter) {
-            printTerminalStream(`[Tool 3/8] identify_variances mapping variance matrices down to target parameters`, "text-amber-400 font-bold");
-            const actualsContext = get_actuals(business_unit, quarter);
-            const planContext = get_plan(business_unit);
-            const calculatedVariances = [];
+            const actuals = get_actuals(business_unit, quarter);
+            const plan = get_plan(business_unit);
+            const variances = [];
 
-            actualsContext.actuals.forEach(row => {
-                const calculatedGrossMarginVariance = parseFloat((row.gm_pct - planContext.gm_target_pct).toFixed(2));
-                const calculatedDiscountVariance = parseFloat((row.disc_pct - planContext.plan_discount_pct).toFixed(2));
-                calculatedVariances.push({
-                    category: row.product_category,
-                    quarter: row.quarter,
-                    net_rev_mm: row.net_rev_mm,
-                    actual_gm_pct: row.gm_pct,
-                    target_gm_pct: planContext.gm_target_pct,
-                    gm_variance_pp: calculatedGrossMarginVariance,
-                    actual_disc_pct: row.disc_pct,
-                    plan_disc_pct: planContext.plan_discount_pct,
-                    disc_variance_pp: calculatedDiscountVariance,
-                    gm_dollar_impact_mm: parseFloat((row.net_rev_mm * calculatedGrossMarginVariance / 100).toFixed(2)),
-                    material: Math.abs(calculatedGrossMarginVariance) >= 2.0 || Math.abs(calculatedDiscountVariance) >= 1.0
+            actuals.actuals.forEach(row => {
+                const gm_var = parseFloat((row.gm_pct - plan.gm_target_pct).toFixed(2));
+                const disc_var = parseFloat((row.disc_pct - plan.plan_discount_pct).toFixed(2));
+                variances.push({
+                    "category":        row.product_category,
+                    "quarter":         row.quarter,
+                    "net_rev_mm":      row.net_rev_mm,
+                    "actual_gm_pct":   row.gm_pct,
+                    "target_gm_pct":   plan.gm_target_pct,
+                    "gm_variance_pp":  gm_var,
+                    "actual_disc_pct": row.disc_pct,
+                    "plan_disc_pct":   plan.plan_discount_pct,
+                    "disc_variance_pp":disc_var,
+                    "gm_dollar_impact_mm": parseFloat((row.net_rev_mm * gm_var / 100).toFixed(2)),
+                    "material":        Math.abs(gm_var) >= 2.0 || Math.abs(disc_var) >= 1.0,
                 });
             });
 
+            variances.sort((a, b) => Math.abs(b.gm_dollar_impact_mm) - Math.abs(a.gm_dollar_impact_mm));
+
             return {
-                business_unit: business_unit,
-                quarter: quarter,
-                variances: calculatedVariances,
-                material_count: calculatedVariances.filter(v => v.material).length,
-                total_gm_impact_mm: parseFloat(calculatedVariances.reduce((acc, c) => acc + c.gm_dollar_impact_mm, 0).toFixed(2))
+                "business_unit": business_unit,
+                "quarter":       quarter,
+                "variances":     variances,
+                "material_count": variances.filter(v => v.material).length,
+                "total_gm_impact_mm": parseFloat(variances.reduce((acc, v) => acc + v.gm_dollar_impact_mm, 0).toFixed(2)),
             };
         }
 
-        // Tool 4: Route variance anomalies to root causes
+        // Tool 4: Route operational variances down to thematic root drivers
         function classify_variance(business_unit, quarter) {
-            printTerminalStream(`[Tool 4/8] classify_variance parsing multidimensional drivers for core root cause evaluation`, "text-amber-400 font-bold");
-            
-            const pricingDriversRows = internalQueryDatabase(`
-                SELECT ROUND(AVG(discount_rate)*100,2) AS actual_disc, ROUND(AVG(plan_discount_rate)*100,2) AS plan_disc 
+            const disc_rows = q(dbPricing, `
+                SELECT ROUND(AVG(discount_rate)*100,2) AS actual_disc, ROUND(AVG(plan_discount_rate)*100,2) AS plan_disc, COUNT(*) AS n_deals
                 FROM transactions WHERE product_category=? AND quarter=?`, [business_unit, quarter]);
-            
-            const cogsDriverRows = internalQueryDatabase(`
-                SELECT ROUND(AVG(total_cost_variance),2) AS avg_unit_var,
-                       ROUND(AVG(total_cost_variance)/AVG(standard_unit_cost)*100,2) AS var_pct,
-                       COUNT(CASE WHEN favorable=0 THEN 1 END) AS unfav
+
+            const vol_rows = q(dbPricing, `SELECT quarter, COUNT(*) AS n_deals, ROUND(SUM(net_revenue)/1e6,2) AS rev_mm FROM transactions WHERE product_category=? GROUP BY quarter ORDER BY quarter`, [business_unit]);
+
+            const cogs_rows = q(dbCogs, `
+                SELECT ROUND(AVG(total_cost_variance),2) AS avg_unit_var, ROUND(AVG(total_cost_variance)/AVG(standard_unit_cost)*100,2) AS var_pct, COUNT(CASE WHEN favorable=1 THEN 1 END) AS fav, COUNT(CASE WHEN favorable=0 THEN 1 END) AS unfav
                 FROM standard_vs_actual WHERE category=? AND quarter=?`, [business_unit, quarter]);
 
-            const demandDriverRows = internalQueryDatabase(`
-                SELECT ROUND(AVG(mape)*100,2) AS mape, ROUND(AVG(bias_pct)*100,2) AS bias 
-                FROM forecast_accuracy WHERE category=?`, [business_unit]);
+            const fc_rows = q(dbDemand, `SELECT ROUND(AVG(mape)*100,2) AS mape, ROUND(AVG(bias_pct)*100,2) AS bias FROM forecast_accuracy WHERE category=? AND month LIKE '2024%'`, [business_unit]);
 
-            const isolatedDriversList = [];
-            const pData = pricingDriversRows[0] || {};
-            const cData = cogsDriverRows[0] || {};
-            const dData = demandDriverRows[0] || {};
+            const disc = disc_rows[0] || {};
+            const cogs = cogs_rows[0] || {};
+            const fc = fc_rows[0] || {};
+            const drivers = [];
 
-            if(pData.actual_disc && Math.abs(pData.actual_disc - pData.plan_disc) >= 1.0) {
-                const pricingDelta = parseFloat((pData.actual_disc - pData.plan_disc).toFixed(1));
-                isolatedDriversList.push({
-                    driver: "Pricing / Discount",
-                    direction: pricingDelta > 0 ? "Unfavorable" : "Favorable",
-                    detail: `Actual discount sequence tracking at ${pData.actual_disc}% vs planned baseline target of ${pData.plan_disc}% (+${pricingDelta}pp margin erosion offset)`,
-                    severity: Math.abs(pricingDelta) >= 3 ? "High" : "Medium"
+            if (disc && Math.abs((disc.actual_disc || 0) - (disc.plan_disc || 0)) >= 1.0) {
+                const delta = parseFloat((disc.actual_disc - disc.plan_disc).toFixed(1));
+                drivers.append = drivers.push({
+                    "driver": "Pricing / Discount",
+                    "direction": delta < 0 ? "Favorable" : "Unfavorable",
+                    "detail": `Actual discount ${disc.actual_disc}% vs. plan ${disc.plan_disc}% (${delta > 0 ? '+' : ''}${delta}pp)`,
+                    "severity": Math.abs(delta) >= 3 ? "High" : "Medium",
                 });
             }
 
-            if(cData.avg_unit_var && Math.abs(cData.avg_unit_var) > 0) {
-                isolatedDriversList.push({
-                    driver: "COGS / Standard Cost Inflation",
-                    direction: cData.avg_unit_var > 0 ? "Unfavorable" : "Favorable",
-                    detail: `Average unit fabrication costs drifted by $${cData.avg_unit_var} above projection parameters (${cData.var_pct}% delta shifts over standard baselines)`,
-                    severity: "High"
+            if (vol_rows.length >= 2) {
+                const prev = vol_rows[vol_rows.length - 2];
+                const curr = vol_rows[vol_rows.length - 1];
+                const vol_delta = curr.n_deals - prev.n_deals;
+                if (Math.abs(vol_delta) >= 20) {
+                    drivers.push({
+                        "driver": "Volume",
+                        "direction": vol_delta > 0 ? "Favorable" : "Unfavorable",
+                        "detail": `Deal count ${curr.n_deals} vs. prior quarter ${prev.n_deals} (${vol_delta > 0 ? '+' : ''}${vol_delta} deals)`,
+                        "severity": "Medium",
+                    });
+                }
+            }
+
+            if (cogs && cogs.avg_unit_var && Math.abs(cogs.avg_unit_var) > 0) {
+                drivers.push({
+                    "driver": "COGS / Standard Cost",
+                    "direction": cogs.avg_unit_var < 0 ? "Favorable" : "Unfavorable",
+                    "detail": `Avg unit variance $${cogs.avg_unit_var >= 0 ? '+' : ''}${parseFloat(cogs.avg_unit_var).toFixed(0)} (${cogs.var_pct >= 0 ? '+' : ''}${parseFloat(cogs.var_pct).bind ? '' : parseFloat(cogs.var_pct).toFixed(1)}% of std) · ${cogs.unfav} unfavorable months`,
+                    "severity": Math.abs(cogs.var_pct || 0) >= 3 ? "High" : "Medium",
                 });
             }
 
-            if(dData.mape && dData.mape > 10) {
-                isolatedDriversList.push({
-                    driver: "Demand Operations Planning Miss",
-                    direction: dData.bias < 0 ? "Unfavorable" : "Neutral",
-                    detail: `System tracking a structural MAPE of ${dData.mape}% alongside a systematic compounding over-forecast bias trend of ${parseFloat((dData.bias*100).toFixed(1))}%`,
-                    severity: "Medium"
+            if (fc && fc.mape && fc.mape > 10) {
+                drivers.push({
+                    "driver": "Demand / Forecast",
+                    "direction": fc.bias < 0 ? "Unfavorable" : "Neutral",
+                    "detail": `MAPE ${fc.mape}% · bias ${fc.bias >= 0 ? '+' : ''}${parseFloat(fc.bias).toFixed(1)}% (${fc.bias < 0 ? 'over-forecast' : 'under-forecast'})`,
+                    "severity": "Medium",
                 });
             }
 
-            return {
-                business_unit: business_unit,
-                quarter: quarter,
-                primary_drivers: isolatedDriversList,
-                driver_count: isolatedDriversList.length
-            };
+            return { "business_unit": business_unit, "quarter": quarter, "primary_drivers": drivers, "driver_count": drivers.length };
         }
 
-        // Tool 5: Pull forward-looking pipeline health indicators
+        // Tool 5: Pull forward pipeline coverage funnels
         function get_pipeline(business_unit) {
-            printTerminalStream(`[Tool 5/8] get_pipeline scanning core opportunity funnels & win boundaries`, "text-amber-400 font-bold");
             const criteria = business_unit === "All" ? "" : "WHERE d.product_category = ?";
-            const parameterArray = business_unit === "All" ? [] : [business_unit];
+            const parameters = business_unit === "All" ? [] : [business_unit];
 
-            const complexPipelineQuery = `
+            const rows = q(dbDeals, `
                 SELECT d.deal_stage,
-                       ROUND(SUM(d.net_deal_value)/1e6, 2)                      AS pipeline_mm,
-                       ROUND(AVG(d.gm_pct)*100, 2)                              AS avg_gm,
-                       ROUND(AVG(d.win_probability)*100, 1)                      AS avg_win_prob,
-                       COUNT(*)                                                 AS n_deals,
-                       COUNT(CASE WHEN s.recommendation='Approve' THEN 1 END)   AS approved,
-                       COUNT(CASE WHEN s.recommendation='Escalate' THEN 1 END)  AS escalated
+                       ROUND(SUM(d.net_deal_value)/1e6,2)          AS pipeline_mm,
+                       ROUND(AVG(d.gm_pct)*100,2)                  AS avg_gm,
+                       ROUND(AVG(d.win_probability)*100,1)          AS avg_win_prob,
+                       COUNT(*)                                     AS n_deals,
+                       COUNT(CASE WHEN s.recommendation='Approve' THEN 1 END) AS approved,
+                       COUNT(CASE WHEN s.recommendation='Escalate' THEN 1 END) AS escalated,
+                       COUNT(CASE WHEN s.recommendation='Reject' THEN 1 END) AS rejected
                 FROM deals d JOIN deal_scores s ON d.deal_id=s.deal_id
                 ${criteria} GROUP BY d.deal_stage ORDER BY pipeline_mm DESC
-            `;
-            const pipelineMatrixRows = internalQueryDatabase(complexPipelineQuery, parameterArray);
-            const integratedGrossVolume = pipelineMatrixRows.reduce((sum, current) => sum + current.pipeline_mm, 0);
-            const consolidatedDealsCount = pipelineMatrixRows.reduce((sum, current) => sum + current.n_deals, 0);
-            const consolidatedEscalatedCount = pipelineMatrixRows.reduce((sum, current) => sum + current.escalated, 0);
+            `, parameters);
+
+            const total = rows.reduce((acc, r) => acc + r.pipeline_mm, 0);
+            const approved = rows.reduce((acc, r) => acc + r.approved, 0);
+            const total_n = rows.reduce((acc, r) => acc + r.n_deals, 0);
+            const escalated = rows.reduce((acc, r) => acc + r.escalated, 0);
 
             return {
-                business_unit: business_unit,
-                stages: pipelineMatrixRows,
-                total_pipeline_mm: parseFloat(integratedGrossVolume.toFixed(2)),
-                total_deals: consolidatedDealsCount,
-                approval_rate_pct: 66.7,
-                escalation_rate_pct: parseFloat((consolidatedEscalatedCount / consolidatedDealsCount * 100).toFixed(1))
+                "business_unit":    business_unit,
+                "stages":           rows,
+                "total_pipeline_mm": parseFloat(total.toFixed(2)),
+                "total_deals":      total_n,
+                "approval_rate_pct": total_n ? parseFloat((approved/total_n*100).toFixed(1)) : 0,
+                "escalation_rate_pct": total_n ? parseFloat((escalated/total_n*100).toFixed(1)) : 0,
             };
         }
 
-        // Tool 6: Cross-reference supply chain operational dependencies
+        // Tool 6: Audit supply chain variables and logistics matrices
         function check_supply_chain(business_unit, quarter) {
-            printTerminalStream(`[Tool 6/8] check_supply_chain reviewing inventory positions & fabrication exceptions`, "text-amber-400 font-bold");
-            
-            const marginWaterfallDataRows = internalQueryDatabase(`
-                SELECT ROUND(SUM(net_revenue)/1e6,2) AS net_mm, ROUND(SUM(cogs_total)/1e6,2) AS cogs_mm,
-                       ROUND(AVG(gross_margin_pct)*100,2) AS gm_pct,
-                       ROUND(SUM(materials_cogs)/SUM(cogs_total)*100,1) AS mat_pct,
-                       ROUND(SUM(yield_loss_cogs)/SUM(cogs_total)*100,1) AS yield_pct
-                FROM margin_waterfall WHERE category=? AND quarter=?`, [business_unit, quarter]);
+            const wf = q(dbCogs, `SELECT ROUND(SUM(net_revenue)/1e6,2) AS net_mm, ROUND(SUM(cogs_total)/1e6,2) AS cogs_mm, ROUND(SUM(gross_profit)/1e6,2) AS gp_mm, ROUND(AVG(gross_margin_pct)*100,2) AS gm_pct, ROUND(SUM(materials_cogs)/SUM(cogs_total)*100,1) AS mat_pct, ROUND(SUM(yield_loss_cogs)/SUM(cogs_total)*100,1) AS yield_pct FROM margin_waterfall WHERE category=? AND quarter=?`, [business_unit, quarter]);
+            const sv = q(dbCogs, `SELECT supplier, ROUND(AVG(total_cost_variance),2) AS avg_var, ROUND(AVG(total_cost_variance)/AVG(standard_unit_cost)*100,2) AS var_pct, COUNT(CASE WHEN favorable=0 THEN 1 END) AS unfav_months FROM standard_vs_actual WHERE category=? AND month LIKE '2024-1%' GROUP BY supplier ORDER BY avg_var DESC LIMIT 3`, [business_unit]);
+            const inv = q(dbInv, `SELECT ROUND(AVG(ip.days_inventory_outstanding),1) AS avg_dio, ROUND(AVG(ip.target_dio),1) AS target_dio, ROUND(SUM(ip.inventory_value)/1e6,2) AS inv_mm FROM inventory_positions ip WHERE ip.category=? AND ip.month LIKE '2024%'`, [business_unit]);
+            const fc = q(dbDemand, `SELECT ROUND(AVG(fa.mape)*100,2) AS mape, ROUND(AVG(fa.bias_pct)*100,2) AS bias, SUM(fa.under_forecast) AS under_count, SUM(fa.over_forecast) AS over_count FROM forecast_accuracy fa WHERE fa.category=? AND fa.quarter=?`, [business_unit, quarter]);
 
-            const positionsDataRows = internalQueryDatabase(`
-                SELECT ROUND(AVG(days_inventory_outstanding),1) AS avg_dio, ROUND(AVG(target_dio),1) AS target_dio,
-                       ROUND(SUM(inventory_value)/1e6,2) AS inv_mm FROM inventory_positions WHERE category=?`, [business_unit]);
+            const findings = [];
+            const wf_row = wf[0] || {};
+            const inv_row = inv[0] || {};
+            const fc_row = fc[0] || {};
 
-            const findingsSummaryArray = [];
-            const wRow = marginWaterfallDataRows[0] || {};
-            const iRow = positionsDataRows[0] || {};
-
-            if(wRow.gm_pct && wRow.gm_pct < GM_TARGETS[business_unit]) {
-                const targetDeficitDelta = parseFloat((wRow.gm_pct - GM_TARGETS[business_unit]).toFixed(1));
-                findingsSummaryArray.push(`COGS-driven Gross Margin structural gap of ${targetDeficitDelta}pp discovered — components materials represent ${wRow.mat_pct}% of footprint, while fabrication wafer line yield drops represent ${wRow.yield_pct}% of total cost allocation structures.`);
+            const standardTarget = GM_TARGETS[business_unit] || 35;
+            if (wf_row.gm_pct && wf_row.gm_pct < standardTarget) {
+                const gap = parseFloat((wf_row.gm_pct - standardTarget).toFixed(1));
+                findings.push(`COGS-driven GM gap of ${gap}pp — materials at ${wf_row.mat_pct}%, yield loss at ${wf_row.yield_pct}% of COGS`);
             }
-
-            if(iRow.avg_dio && iRow.avg_dio > iRow.target_dio) {
-                const overageDaysDelta = Math.round(iRow.avg_dio - iRow.target_dio);
-                findingsSummaryArray.push(`Global inventory layers reporting at ${iRow.avg_dio} Days Inventory Outstanding (DIO) vs strict corporate target ceilings of ${iRow.target_dio} days (+${overageDaysDelta} operational overhead padding days identified).`);
-            }
-
-            return {
-                business_unit: business_unit,
-                quarter: quarter,
-                cogs_waterfall: wRow,
-                inventory: iRow,
-                sc_findings: findingsSummaryArray,
-                sc_risk_count: findingsSummaryArray.length
-            };
-        }
-
-        // Tool 7: Aggregate forward-facing risks
-        function flag_risks(business_unit) {
-            printTerminalStream(`[Tool 7/8] flag_risks calculating risk indicators & mitigation paths`, "text-amber-400 font-bold");
-            const structuredRiskProfileRecordsList = [
-                {
-                    category: "Commercial Deal Margin Deflection",
-                    risk: "VP tier escalation triggers are bounding out to 33.3% across open pipeline channels, causing timeline velocity slowdowns.",
-                    severity: "High",
-                    recommended_action: "Enforce uniform fallback authority parameters for regional sales leads."
-                },
-                {
-                    category: "Structural Supply Cost Inflation Trajectory",
-                    risk: "Sub-4nm wafer package fabrication yields show consistent downward variation flags over a 3-month trailing cycle.",
-                    severity: "High",
-                    recommended_action: "Re-negotiate procurement floor terms with global foundry operations ahead of FY25 procurement binding."
+            if (inv_row.avg_dio && inv_row.target_dio) {
+                const excess = inv_row.avg_dio - inv_row.target_dio;
+                if (excess > 5) {
+                    findings.push(`DIO ${inv_row.avg_dio} days vs. ${inv_row.target_dio}-day target (+${Math.round(excess)} days excess = $${parseFloat((inv_row.inv_mm*excess/inv_row.avg_dio).toFixed(1))}M tied up)`);
                 }
-            ];
+            }
+            if (fc_row.mape && fc_row.mape > 10) {
+                findings.push(`Forecast MAPE ${fc_row.mape}% with ${fc_row.bias >= 0 ? '+' : ''}${parseFloat(fc_row.bias).toFixed(1)}% bias — demand planning accuracy is affecting inventory build`);
+            }
 
+            const top_supplier = sv[0] || {};
+            if (top_supplier.var_pct && Math.abs(top_supplier.var_pct) >= 2) {
+                findings.push(`Top supplier variance: ${top_supplier.supplier} at ${top_supplier.var_pct >= 0 ? '+' : ''}${parseFloat(top_supplier.var_pct).toFixed(1)}% above standard cost (${top_supplier.unfav_months} unfavorable months in quarter)`);
+            }
+
+            return { "business_unit": business_unit, "quarter": quarter, "cogs_waterfall": wf_row, "top_supplier_variance": sv, "inventory": inv_row, "forecast_accuracy": fc_row, "sc_findings": findings, "sc_risk_count": findings.length };
+        }
+
+        // Tool 7: Identify compounding risk vectors
+        function flag_risks(business_unit) {
+            const risks = [];
+            const pipe = get_pipeline(business_unit);
+            
+            if (pipe.escalation_rate_pct > 40) {
+                risks.push({
+                    "category": "Pipeline",
+                    "risk": `High VP escalation rate (${pipe.escalation_rate_pct}% of ${pipe.total_deals} deals) — deal approval bottleneck may slow Q1 close`,
+                    "severity": "High",
+                    "recommended_action": "Recalibrate scoring model weights; coach reps on sub-15% discount structures"
+                });
+            }
+
+            const slow = q(dbInv, `SELECT ROUND(SUM(write_off_risk)/1e6,2) AS risk_mm, SUM(slow_mover_flag) AS slow_count FROM slow_movers WHERE category=?`, [business_unit]);
+            if (slow && slow[0] && slow[0].risk_mm > 1) {
+                risks.push({
+                    "category": "Inventory",
+                    "risk": `$${slow[0].risk_mm}M write-off exposure across ${Math.round(slow[0].slow_count)} slow-mover flags — aging inventory risk ahead of Q1`,
+                    "severity": "Medium",
+                    "recommended_action": "Initiate sellthrough program with commercial team; consider price adjustment on aged SKUs"
+                });
+            }
+
+            const cogs_trend = q(dbCogs, `
+                SELECT w.quarter, ROUND(AVG(w.gross_margin_pct)*100,2) AS gm_pct
+                FROM margin_waterfall w JOIN standard_vs_actual s ON w.category=s.category AND w.month=s.month
+                WHERE w.category=? GROUP BY w.quarter ORDER BY w.quarter`, [business_unit]);
+
+            if (cogs_trend.length >= 2) {
+                const q1_gm = cogs_trend[0].gm_pct;
+                const q4_gm = cogs_trend[cogs_trend.length - 1].gm_pct;
+                if (q4_gm < q1_gm - 2) {
+                    risks.push({
+                        "category": "COGS",
+                        "risk": `GM% declining through the year: ${q1_gm}% (Q1) → ${q4_gm}% (Q4) — cost structure deteriorating quarter over quarter`,
+                        "severity": "High",
+                        "recommended_action": "Initiate supplier cost review; model FY2025 standard costs using Q3/Q4 actuals as new baseline"
+                    });
+                }
+            }
+
+            const fc = q(dbDemand, `SELECT ROUND(AVG(mape)*100,2) AS mape, ROUND(AVG(bias_pct)*100,2) AS bias FROM forecast_accuracy WHERE category=?`, [business_unit]);
+            if (fc && fc[0] && fc[0].mape > 12) {
+                const direction = fc[0].bias > 0 ? "under-forecast (stockout risk)" : "over-forecast (inventory risk)";
+                risks.push({
+                    "category": "Demand Planning",
+                    "risk": `MAPE ${fc[0].mape}% with systematic ${direction} — forecast error will compound into Q1 inventory position`,
+                    "severity": "Medium",
+                    "recommended_action": "Review S&OP assumptions; implement statistical forecasting for high-MAPE SKUs"
+                });
+            }
+
+            const west = q(dbChannel, `SELECT rep_name, ROUND(quota_attainment_pct*100,1) AS att FROM rep_performance WHERE region='West' AND quota_attainment_pct < 1.0`);
+            if (west.length >= 2) {
+                risks.push({
+                    "category": "Channel / Territory",
+                    "risk": `West region: ${west.length} of 3 reps below quota (${west.map(r => r.rep_name+' '+r.att+'%').join(', ')}) — consistent regional miss points to competitive/territory issue`,
+                    "severity": "Medium",
+                    "recommended_action": "Initiate West territory review before Q1 quota-setting; evaluate whether quotas need recalibration"
+                });
+            }
+
+            return { "business_unit": business_unit, "risks": risks, "high_count": risks.filter(r => r.severity==='High').length, "medium_count": risks.filter(r => r.severity==='Medium').length, "total_risks": risks.length };
+        }
+
+        // Tool 8: Pack the structural summary arguments
+        function build_qbr_draft(business_unit, quarter, actuals_summary, variance_summary, classification_summary, pipeline_summary, sc_summary, risk_summary) {
             return {
-                business_unit: business_unit,
-                risks: structuredRiskProfileRecordsList,
-                high_count: 2,
-                medium_count: 0,
-                total_risks: 2
+                "document_type":  "Quarterly Business Review",
+                "business_unit":  business_unit,
+                "period":         quarter,
+                "prepared_by":    "QBR Prep Agent — Middleton Finance Suite",
+                "prepared_at":    new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+                "status":         "Draft — for review by Finance Manager before distribution"
             };
         }
 
-        // Tool 8: Assemble contextual elements to baseline structural layout
-        function build_qbr_draft(business_unit, quarter, summariesContextPayload) {
-            printTerminalStream(`[Tool 8/8] build_qbr_draft compiling localized package payloads into final scaffold framework structural layers`, "text-emerald-400 font-bold");
-            return {
-                document_type: "Quarterly Business Review Master Document",
-                business_unit: business_unit,
-                period: quarter,
-                prepared_by: "Autonomous QBR Prep Agent — Middleton Finance Suite Workspace Console",
-                prepared_at: new Date().toLocaleString(),
-                status: "System-Compiled Dynamic Draft Assembly ready for Executive Signoff"
-            };
-        }
 
         // =================================═══════════════════════
-        // THE AGENT RUNTIME PIPELINE EXECUTION LOOP CONSOLE
+        // DYNAMIC AGENT REASONING COMPLETION ENGINE LOOP
         // =================================═══════════════════════
         async function triggerAutonomousPipeline() {
-            const isSimulationModeActive = document.getElementById("executionModeToggle").checked;
-            const enteredApiKey = document.getElementById("anthropicKeyField").value.trim();
+            const isSimulationMode = document.getElementById("executionModeToggle").checked;
+            const accessKey = document.getElementById("anthropicKeyField").value.trim();
             const selectedBU = document.getElementById("buSelector").value;
             const selectedQuarter = document.getElementById("quarterSelector").value;
 
-            if(!isSimulationModeActive && !enteredApiKey) {
-                alert("Valid API keys or custom routing proxy credentials are required to initiate external multi-turn LLM pipelines.");
+            if(!isSimulationMode && !accessKey) {
+                alert("Please enter your ANTHROPIC_API_KEY environment string or toggle Simulation Mode.");
                 return;
             }
 
-            // Initialize UI elements state
+            // Clear display fields
             document.getElementById("terminalScreen").innerHTML = "";
-            document.getElementById("canvasHeaderFrame").classList.add("hidden");
             document.getElementById("canvasReportContent").innerHTML = `
-                <div class="flex flex-col items-center justify-center text-center h-96 space-y-3">
-                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                    <span class="text-xs text-slate-500 font-medium">Agent executing planning trace steps and calling structural relational analytical databases...</span>
+                <div class="flex flex-col items-center justify-center text-center h-full text-slate-500 space-y-2">
+                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-cyan-400"></div>
+                    <span>// Orchestrating multi-turn tool interaction stream...</span>
                 </div>
             `;
 
-            printTerminalStream(`Starting Autonomous Assessment Routine Sequence for target unit [${selectedBU}] across horizon [${selectedQuarter}]`, "text-blue-400 font-bold");
-            await new Promise(res => setTimeout(res, 600));
+            // Enforce layout splash tracking python agent print header
+            printTerminalSplashHeader();
+            appendConsoleLine(`  Preparing QBR for: ${selectedBU} · ${selectedQuarter}`, "term-bold");
+            appendConsoleLine("  The agent will autonomously call all 8 tools.", "term-dim");
+            appendConsoleLine("");
+            
+            appendConsoleLine("  ┌─ Agent Planning ──────────────────────────────────────────────────", "term-blue");
+            appendConsoleLine(`  Goal: Prepare ${selectedBU} QBR — ${selectedQuarter}`, "term-cyan");
+            appendConsoleLine("");
 
-            // Executing sequence loop mimicking true multi-turn orchestration flow patterns
-            printTerminalStream("[Thinking] Ingesting fundamental baseline transaction blocks to ascertain revenue trajectories...", "text-slate-400 italic");
-            const actualsResultsMatrix = get_actuals(selectedBU, selectedQuarter);
-            await new Promise(res => setTimeout(res, 500));
+            await new Promise(r => setTimeout(r, 450));
 
-            printTerminalStream("[Thinking] Extracting financial roadmap parameters and baseline target definitions...", "text-slate-400 italic");
-            const operationalPlanMatrix = get_plan(selectedBU);
-            await new Promise(res => setTimeout(res, 500));
+            // Tool 1 Run
+            appendConsoleLine("  [Thinking] Ingesting performance actuals matrix lines to isolate segment baseline trends.", "term-dim");
+            const resActuals = get_actuals(selectedBU, selectedQuarter);
+            appendConsoleLine(`  [Tool 1] get_actuals(business_unit='${selectedBU}', quarter='${selectedQuarter}')`, "term-yellow term-bold");
+            appendConsoleLine(`         → ${JSON.stringify(resActuals).substring(0, 115)}...`, "term-dim");
+            appendConsoleLine("");
+            await new Promise(r => setTimeout(r, 400));
 
-            printTerminalStream("[Thinking] Evaluating actual results against model boundaries to detect absolute variance indicators...", "text-slate-400 italic");
-            const varianceMatrixResults = identify_variances(selectedBU, selectedQuarter);
-            await new Promise(res => setTimeout(res, 500));
+            // Tool 2 Run
+            appendConsoleLine("  [Thinking] Reviewing standard target models and target parameter thresholds.", "term-dim");
+            const resPlan = get_plan(selectedBU);
+            appendConsoleLine(`  [Tool 2] get_plan(business_unit='${selectedBU}')`, "term-yellow term-bold");
+            appendConsoleLine(`         → ${JSON.stringify(resPlan).substring(0, 115)}...`, "term-dim");
+            appendConsoleLine("");
+            await new Promise(r => setTimeout(r, 400));
 
-            printTerminalStream("[Thinking] Isolating Primary drivers of variance to understand cross-organizational impacts...", "text-slate-400 italic");
-            const classificationResults = classify_variance(selectedBU, selectedQuarter);
-            await new Promise(res => setTimeout(res, 500));
+            // Tool 3 Run
+            appendConsoleLine("  [Thinking] Compiling margin variations relative to structural target parameters.", "term-dim");
+            const resVariance = identify_variances(selectedBU, selectedQuarter);
+            appendConsoleLine(`  [Tool 3] identify_variances(business_unit='${selectedBU}', quarter='${selectedQuarter}')`, "term-yellow term-bold");
+            appendConsoleLine(`         → ${JSON.stringify(resVariance).substring(0, 115)}...`, "term-dim");
+            appendConsoleLine("");
+            await new Promise(r => setTimeout(r, 400));
 
-            printTerminalStream("[Thinking] Querying deal pipeline matrices to quantify forward bookings pipeline momentum...", "text-slate-400 italic");
-            const forwardPipelineMatrix = get_pipeline(selectedBU);
-            await new Promise(res => setTimeout(res, 500));
+            // Tool 4 Run
+            appendConsoleLine("  [Thinking] Dissecting primary drivers and anomaly parameters across data fields.", "term-dim");
+            const resClassify = classify_variance(selectedBU, selectedQuarter);
+            appendConsoleLine(`  [Tool 4] classify_variance(business_unit='${selectedBU}', quarter='${selectedQuarter}')`, "term-yellow term-bold");
+            appendConsoleLine(`         → ${JSON.stringify(resClassify).substring(0, 115)}...`, "term-dim");
+            appendConsoleLine("");
+            await new Promise(r => setTimeout(r, 400));
 
-            printTerminalStream("[Thinking] Mapping operational metrics to evaluate global component factory yields...", "text-slate-400 italic");
-            const supplyChainAnalysisMatrix = check_supply_chain(selectedBU, selectedQuarter);
-            await new Promise(res => setTimeout(res, 500));
+            // Tool 5 Run
+            appendConsoleLine("  [Thinking] Evaluating active pipeline volumes and regional discount velocity tiers.", "term-dim");
+            const resPipeline = get_pipeline(selectedBU);
+            appendConsoleLine(`  [Tool 5] get_pipeline(business_unit='${selectedBU}')`, "term-yellow term-bold");
+            appendConsoleLine(`         → ${JSON.stringify(resPipeline).substring(0, 115)}...`, "term-dim");
+            appendConsoleLine("");
+            await new Promise(r => setTimeout(r, 400));
 
-            printTerminalStream("[Thinking] Evaluating operational indicators to extract forward-looking inventory risk markers...", "text-slate-400 italic");
-            const aggregatedRiskIdentifications = flag_risks(selectedBU);
-            await new Promise(res => setTimeout(res, 500));
+            // Tool 6 Run
+            appendConsoleLine("  [Thinking] Auditing fabrication line yield variations and backlog DIO patterns.", "term-dim");
+            const resSC = check_supply_chain(selectedBU, selectedQuarter);
+            appendConsoleLine(`  [Tool 6] check_supply_chain(business_unit='${selectedBU}', quarter='${selectedQuarter}')`, "term-yellow term-bold");
+            appendConsoleLine(`         → ${JSON.stringify(resSC).substring(0, 115)}...`, "term-dim");
+            appendConsoleLine("");
+            await new Promise(r => setTimeout(r, 400));
 
-            printTerminalStream("[Thinking] Consolidating multi-dimensional arrays into structured structural reporting scaffolding frames...", "text-slate-400 italic");
-            const constructedScaffoldingDataPackage = build_qbr_draft(selectedBU, selectedQuarter, {});
-            await new Promise(res => setTimeout(res, 600));
+            // Tool 7 Run
+            appendConsoleLine("  [Thinking] Processing slow-mover exposures and territorial quota discrepancies.", "term-dim");
+            const resRisks = flag_risks(selectedBU);
+            appendConsoleLine(`  [Tool 7] flag_risks(business_unit='${selectedBU}')`, "term-yellow term-bold");
+            appendConsoleLine(`         → ${JSON.stringify(resRisks).substring(0, 115)}...`, "term-dim");
+            appendConsoleLine("");
+            await new Promise(r => setTimeout(r, 400));
 
-            printTerminalStream("All 8 analytic tools successfully returned outputs. Assembling raw executive brief documentation packaging layers...", "text-emerald-400 font-bold");
-            await new Promise(res => setTimeout(res, 400));
+            // Synthesize short functional mock blocks for build_qbr_draft tool arguments
+            const actualsTxt = `Total actual net revenues hit $${resActuals.total_rev_mm}M over ${resActuals.n_rows} logged categories.`;
+            const varTxt = `Found ${resVariance.material_count} material variance rows with absolute margin deficit indexing at $${resVariance.total_gm_impact_mm}M.`;
+            const classTxt = `Identified ${resClassify.driver_count} key drivers. Pricing discount actions tracking higher.`;
+            const pipeTxt = `Forward pipeline aggregates to $${resPipeline.total_pipeline_mm}M with a ${resPipeline.escalation_rate_pct}% VP escalation threshold rate.`;
+            const scTxt = `Supply chain audits flag ${resSC.sc_risk_count} critical findings across component factory channels.`;
+            const riskTxt = `System isolated ${resRisks.total_risks} structural risks requiring corrective operational remediation playbook plans.`;
 
-            if(isSimulationModeActive) {
-                // Compile and format the exact data findings cleanly down to the view panel without hitting network CORS blocks
-                compileAndRenderExecutiveReportUI(selectedBU, selectedQuarter, actualsResultsMatrix, varianceMatrixResults, classificationResults, forwardPipelineMatrix, supplyChainAnalysisMatrix, aggregatedRiskIdentifications);
+            // Tool 8 Run
+            appendConsoleLine("  [Thinking] Consolidating tool context strings into target structural scaffold components.", "term-dim");
+            const resDraftScaffold = build_qbr_draft(selectedBU, selectedQuarter, actualsTxt, varTxt, classTxt, pipeTxt, scTxt, riskTxt);
+            appendConsoleLine(`  [Tool 8] build_qbr_draft(business_unit='${selectedBU}', quarter='${selectedQuarter}', ...)`, "term-yellow term-bold");
+            appendConsoleLine("  [Agent] QBR scaffold assembled — writing final document...", "term-green");
+            appendConsoleLine(`         → ${JSON.stringify(resDraftScaffold).substring(0, 115)}...`, "term-dim");
+            appendConsoleLine("");
+            await new Promise(r => setTimeout(r, 500));
+
+            if(isSimulationMode) {
+                // Generate the text document output natively while retaining the exact stylistic text wrap parameters
+                renderTerminalStyledDocumentText(selectedBU, selectedQuarter, resActuals, resVariance, resClassify, resPipeline, resSC, resRisks);
             } else {
-                // If network tracking is enabled, attempt to execute client-side fetch streaming out to the proxy endpoint
-                printTerminalStream("Network forwarding engine engaged. Dispatching structural execution logs down to target API endpoint proxy...", "text-blue-400 font-bold");
-                executeNetworkGatewayForwarding(enteredApiKey, selectedBU, selectedQuarter, {
-                    actuals: actualsResultsMatrix, plan: operationalPlanMatrix, variances: varianceMatrixResults,
-                    classification: classificationResults, pipeline: forwardPipelineMatrix, supplyChain: supplyChainAnalysisMatrix, risks: aggregatedRiskIdentifications
+                appendConsoleLine(">> Enforcing Network Forwarding Sequence down to target endpoint...", "term-blue");
+                executeNetworkPayloadTransmission(accessKey, selectedBU, selectedQuarter, {
+                    actuals: resActuals, variance: resVariance, drivers: resClassify, pipeline: resPipeline, logistics: resSC, risks: resRisks
                 });
             }
         }
 
         // =================================═══════════════════════
-        // NETWORK MIDDLEWARE CONTEXT FORWARDING HANDLER
+        // SERVER-SIDE COMPLETION PAYLOAD STREAMING HANDLER
         // =================================═══════════════════════
-        async function executeNetworkGatewayForwarding(key, bu, quarter, fullContextDataPacket) {
+        async function executeNetworkPayloadTransmission(tokenKey, bu, quarter, fullContextPacket) {
             try {
-                const targetEndpoint = key.startsWith("http") ? key : "https://api.anthropic.com/v1/messages";
-                const serverConnectionResponse = await fetch(targetEndpoint, {
+                const urlGatewayAddress = tokenKey.startsWith("http") ? tokenKey : "https://api.anthropic.com/v1/messages";
+                const networkConnectionStream = await fetch(urlGatewayAddress, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
-                        "x-api-key": key,
+                        "x-api-key": tokenKey,
                         "anthropic-version": "2023-06-01",
                         "dangerously-allow-html-user-multipart-header": "true"
                     },
                     body: JSON.stringify({
                         model: "claude-3-5-haiku-20241022",
-                        max_tokens: 4000,
-                        system: "You are the Senior Executive Analyst inside Middleton Finance Suite. Your objective is to ingest data packets provided by analytic lookup tools and structure them into clean executive HTML components (<section>, <h3>, <p>, <table>, lists) ready for presentation to the CFO. Use bold markers, structured accounting data alignment layouts, and descriptive insights. Do not wrap code inside backticks or triple markdown blocks. Output raw innerHTML structural primitives directly.",
-                        messages: [{ role: "user", content: `Ingest this financial database dataset packet and write the complete final QBR narrative documentation text body in full detail for ${bu} across ${quarter}: ${JSON.stringify(fullContextDataPacket)}` }]
+                        max_tokens: 3500,
+                        system: "You are the Senior QBR Prep Agent inside Middleton Finance Suite. Your objective is to format the final QBR document utilizing raw ASCII line headers and specific terminal wrap styles. Emulate a standard monospace terminal document layout exactly. Do not provide markdown markup wrappers.",
+                        messages: [{ role: "user", content: `Write a standard monospace quarterly business review document for ${bu} over horizon ${quarter} based on this dataset matrix: ${JSON.stringify(fullContextPacket)}` }]
                     })
                 });
 
-                if(!serverConnectionResponse.ok) {
-                    const errorDetailText = await serverConnectionResponse.text();
-                    throw new Error(`Endpoint response failure: ${serverConnectionResponse.status} - ${errorDetailText}`);
+                if(!networkConnectionStream.ok) {
+                    throw new Error(`Gateway Error Context Status code: ${networkConnectionStream.status}`);
                 }
 
-                const extractionJsonPayload = await serverConnectionResponse.json();
-                const compiledNarrativeText = extractionJsonPayload.content[0].text;
+                const outputJsonData = await networkConnectionStream.json();
+                const processedNarrativeText = outputJsonData.content[0].text;
 
-                document.getElementById("outBu").innerText = bu;
-                document.getElementById("outQuarter").innerText = quarter;
-                document.getElementById("canvasHeaderFrame").classList.remove("hidden");
-                document.getElementById("canvasReportContent").innerHTML = compiledNarrativeText;
-                compilationTargetOutputText = compiledNarrativeText.replace(/<[^>]*>/g, ''); 
-                printTerminalStream("Executive QBR narrative compiled successfully over external network gateway pipeline.", "text-emerald-400 font-bold");
-            } catch(networkError) {
-                printTerminalStream(`!! Network routing execution failure: ${networkError.message}`, "text-rose-400 font-bold");
-                printTerminalStream(">> Suggestion: Enlist 'Simulation Mode' tracking switch to test data processing locally.", "text-cyan-400 font-medium");
+                rawTargetNarrativeOutputText = processedNarrativeText;
+                document.getElementById("canvasReportContent").innerText = processedNarrativeText;
+                appendConsoleLine(">> Executive narrative compiled successfully over external network gateway pipeline.", "term-green term-bold");
+            } catch(connErr) {
+                appendConsoleLine(`!! Network Pipeline Interrupted: ${connErr.message}`, "term-red font-bold");
                 document.getElementById("canvasReportContent").innerHTML = `
-                    <div class="p-4 bg-red-50 border border-red-200 text-red-900 rounded-xl text-xs space-y-2">
-                        <span class="font-bold block text-sm">Network Gateway Ingestion Interrupted</span>
-                        <p class="leading-relaxed">CORS restrictions prevent browsers from connecting to external APIs directly. Toggle the "Simulation Mode" switch in the Control Center to bypass network routes and process data structures internally.</p>
-                        <code class="block bg-red-950 text-red-200 p-2 rounded-md font-terminal mt-2">${networkError.message}</code>
+                    <div class="text-red-400">
+                        !! Network Gateway Exception: ${connErr.message}\n\n
+                        Please switch the "Local Virtual DB Execution" switch to process the analytic schemas locally without cross-origin walls.
                     </div>
                 `;
             }
         }
 
         // =================================═══════════════════════
-        // STRUCTURAL RENDERING IMPLEMENTATION CONTROLLER
+        // STRUCTURAL RAW STYLE RENDERING METHOD
         // =================================═══════════════════════
-        function compileAndRenderExecutiveReportUI(bu, quarter, actuals, variances, classification, pipeline, supplyChain, risks) {
-            const actRow = actuals.actuals[0] || { net_rev_mm: 0, gm_pct: 0, disc_pct: 0, n_transactions: 0, avg_deal_size: 0 };
-            const varRow = variances.variances[0] || { target_gm_pct: 35, gm_variance_pp: 0, plan_disc_pct: 14, disc_variance_pp: 0, gm_dollar_impact_mm: 0 };
+        function renderTerminalStyledDocumentText(bu, quarter, actuals, variances, classification, pipeline, supplyChain, risks) {
+            const workspace = document.getElementById("canvasReportContent");
+            
+            const firstRowActual = actuals.actuals[0] || { net_rev_mm: 0, gm_pct: 0, disc_pct: 0, n_transactions: 0, avg_deal_size: 0 };
+            const firstRowVar = variances.variances[0] || { target_gm_pct: 35, gm_variance_pp: 0, plan_disc_pct: 14, disc_variance_pp: 0, gm_dollar_impact_mm: 0 };
 
-            document.getElementById("outBu").innerText = bu;
-            document.getElementById("outQuarter").innerText = quarter;
-            document.getElementById("canvasHeaderFrame").classList.remove("hidden");
+            // Assemble line parameters exactly mapping print_qbr logic
+            let doc = "";
+            doc += "═".repeat(72) + "\n";
+            doc += `  QUARTERLY BUSINESS REVIEW — ${bu.toUpperCase()} — ${quarter}\n`;
+            doc += `  QBR Prep Agent — Middleton Finance Suite\n`;
+            doc += `  ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}\n`;
+            doc += "═".repeat(72) + "\n\n";
+            
+            doc += `  Tools called: 8  |  Model: ${MODEL}\n`;
+            doc += `  Status: Draft — for review by Finance Manager before distribution\n\n`;
+            doc += "─".repeat(72) + "\n\n";
 
-            // Build structural text output template
-            compilationTargetOutputText = `QUARTERLY BUSINESS REVIEW EXECUTIVE ASSESSMENT\nOperating Sector: ${bu} | Horizon: ${quarter}\n\n`;
+            // Section 1 narrative summary
+            doc += "1. Executive Summary\n";
+            doc += `    During the ${quarter} operating cycle, the ${bu} business division recorded a total net volume revenue of $${firstRowActual.net_rev_mm}M spanning ${firstRowActual.n_transactions} contract actions. Average contract sizing metrics tracked at $${firstRowActual.avg_deal_size ? firstRowActual.avg_deal_size.toLocaleString() : '0'}. Core margin yields completed at ${firstRowActual.gm_pct}%, creating a material deviation of ${firstRowVar.gm_variance_pp}pp relative to our targeted performance roadmap plan metrics of ${firstRowVar.target_gm_pct}.0%. This margin compression trend resulted in a net gross profit headwind delta tracking at $${firstRowVar.gm_dollar_impact_mm}M.\n\n`;
 
-            const elementContentLayoutMarkup = `
-                <section class="space-y-2.5">
-                    <h3 class="text-base font-black text-slate-900 border-b-2 border-slate-900 pb-0.5 tracking-tight uppercase">1. Executive Summary</h3>
-                    <p class="text-xs text-slate-700 leading-relaxed">
-                        During the <strong>${quarter}</strong> operational horizon, the <strong>${bu}</strong> business tier yielded total consolidated net revenues of <strong>$${actRow.net_rev_mm}M</strong> spanning <strong>${actRow.n_transactions}</strong> core contract executions with an average deal composition metric tracking at <strong>$${actRow.avg_deal_size.toLocaleString()}</strong>. 
-                        Gross profit tracking margins finished at <strong>${actRow.gm_pct}%</strong>, introducing a structural unfavorable variance of <span class="text-red-600 font-bold">${varRow.gm_variance_pp} percentage points</span> relative to our original baseline target framework metrics of <strong>${varRow.target_gm_pct}.0%</strong>. Total gross profitability metrics was diluted by <span class="text-red-600 font-bold">-$${Math.abs(varRow.gm_dollar_impact_mm)}M</span>.
-                    </p>
-                </section>
+            // Section 2 metrics tabular summary
+            doc += "2. Financial Performance Framework Matrices\n";
+            doc += "    " + "─".repeat(64) + "\n";
+            doc += "    Operational Metric        | Target Plan | Actualized  | Delta Var\n";
+            doc += "    " + "─".repeat(64) + "\n";
+            doc += `    Net Segment Revenue      | $42.50M     | $${firstRowActual.net_rev_mm}M    | +$2.70M\n`;
+            doc += `    Gross Margin %            | ${firstRowVar.target_gm_pct}.0%      | ${firstRowActual.gm_pct}%      | ${firstRowVar.gm_variance_pp}pp\n`;
+            doc += `    Blended Contract Disc %   | ${firstRowVar.plan_disc_pct}.0%      | ${firstRowActual.disc_pct}%      | +${firstRowVar.disc_variance_pp}pp\n`;
+            doc += "    " + "─".repeat(64) + "\n\n";
 
-                <section class="space-y-2.5">
-                    <h3 class="text-base font-black text-slate-900 border-b-2 border-slate-900 pb-0.5 tracking-tight uppercase">2. Financial Performance Framework Matrix</h3>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-[11px] border-collapse border border-slate-300">
-                            <thead>
-                                <tr class="bg-slate-100 text-slate-800 uppercase tracking-wider text-[10px] font-bold">
-                                    <th class="p-2 border border-slate-300">Operational Vector</th>
-                                    <th class="p-2 border border-slate-300">Baseline Target Plan</th>
-                                    <th class="p-2 border border-slate-300">Actualized Metrics</th>
-                                    <th class="p-2 border border-slate-300">Variance Delta</th>
-                                    <th class="p-2 border border-slate-300">Financial Impact Contribution</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-200 text-slate-700 font-medium">
-                                <tr>
-                                    <td class="p-2 font-bold text-slate-900 border border-slate-300">Net Business Volume Revenue</td>
-                                    <td class="p-2 border border-slate-300">$42.50M</td>
-                                    <td class="p-2 border border-slate-300">$${actRow.net_rev_mm}M</td>
-                                    <td class="p-2 text-emerald-600 font-bold border border-slate-300">+$2.70M</td>
-                                    <td class="p-2 text-slate-500 italic border border-slate-300">Volume Driven Beat</td>
-                                </tr>
-                                <tr class="bg-slate-50/60">
-                                    <td class="p-2 font-bold text-slate-900 border border-slate-300">Gross Margin Percentage</td>
-                                    <td class="p-2 border border-slate-300">${varRow.target_gm_pct}.0%</td>
-                                    <td class="p-2 border border-slate-300">${actRow.gm_pct}%</td>
-                                    <td class="p-2 text-red-600 font-bold border border-slate-300">${varRow.gm_variance_pp}pp</td>
-                                    <td class="p-2 text-red-600 font-bold border border-slate-300">-$${Math.abs(varRow.gm_dollar_impact_mm)}M</td>
-                                </tr>
-                                <tr>
-                                    <td class="p-2 font-bold text-slate-900 border border-slate-300">Blended Contract Discount Rates</td>
-                                    <td class="p-2 border border-slate-300">${varRow.plan_disc_pct}.0%</td>
-                                    <td class="p-2 border border-slate-300">${actRow.disc_pct}%</td>
-                                    <td class="p-2 text-red-600 font-bold border border-slate-300">+${varRow.disc_variance_pp}pp</td>
-                                    <td class="p-2 text-slate-500 italic border border-slate-300">Erosion Contributor</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
+            // Section 3 diagnostic root drivers
+            doc += "3. Variance Root Causes & Classifications\n";
+            if(classification.primary_drivers.length) {
+                classification.primary_drivers.forEach(drv => {
+                    doc += `    • [${drv.driver} Vector] — Severity: ${drv.severity}\n`;
+                    doc += `      Insight: ${drv.detail} (${drv.direction} impact to segment)\n`;
+                });
+            } else {
+                doc += "    No material variance root classification drivers identified over standard filters.\n";
+            }
+            doc += "\n";
 
-                <section class="space-y-2.5">
-                    <h3 class="text-base font-black text-slate-900 border-b-2 border-slate-900 pb-0.5 tracking-tight uppercase">3. Variance Isolation & Root Cause Diagnostic</h3>
-                    <div class="space-y-2">
-                        ${classification.primary_drivers.map(d => {
-                            return `
-                                <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs">
-                                    <div class="flex items-center justify-between mb-1">
-                                        <span class="font-bold text-slate-900">${d.driver} — Vector</span>
-                                        <span class="px-2 py-0.5 text-[9px] uppercase tracking-wider font-black rounded ${d.severity === 'High' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'}">${d.severity} Severity</span>
-                                    </div>
-                                    <p class="text-slate-600 leading-relaxed">${d.detail}</p>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                </section>
+            // Section 4 cross references
+            doc += "4. Supply Chain Inter-Organizational Analysis\n";
+            if(supplyChain.sc_findings.length) {
+                supplyChain.sc_findings.forEach(fnd => {
+                    doc += `    • SC Oversight Matrix: ${fnd}\n`;
+                });
+            } else {
+                doc += "    No operational supply anomalies mapped inside standard tolerances.\n";
+            }
+            doc += "\n";
 
-                <section class="space-y-2.5">
-                    <h3 class="text-base font-black text-slate-900 border-b-2 border-slate-900 pb-0.5 tracking-tight uppercase">4. Inter-Organizational Supply Chain Cross-Reference</h3>
-                    <p class="text-xs text-slate-700">Cross-referencing logistics layer data arrays points to direct structural constraints inside fabrication sub-components:</p>
-                    <ul class="text-xs text-slate-600 list-disc pl-5 space-y-1">
-                        ${supplyChain.sc_findings.map(f => `<li>${f}</li>`).join('')}
-                    </ul>
-                </section>
+            // Section 5 pipeline projections
+            doc += "5. Forward Opportunity Pipelines Outlook\n";
+            doc += `    Active sales pipeline aggregates index at $${pipeline.total_pipeline_mm}M total value distributed across ${pipeline.total_deals} transaction items. Automated workflow evaluation rules triggered immediate velocity completions at a ${pipeline.approval_rate_pct}% rate, while the remaining ${pipeline.escalation_rate_pct}% generated floor deal model discount escalations requiring senior VP governance approval actions.\n\n`;
 
-                <section class="space-y-2.5">
-                    <h3 class="text-base font-black text-slate-900 border-b-2 border-slate-900 pb-0.5 tracking-tight uppercase">5. Forward Ingestion Opportunity Pipelines</h3>
-                    <p class="text-xs text-slate-700">Total forward opportunity configurations across active business groups index at <strong>$${pipeline.total_pipeline_mm}M</strong> distributed across <strong>${pipeline.total_deals}</strong> transactions. Structural review indexes operational velocity flags:</p>
-                    <div class="grid grid-cols-2 gap-4 text-xs font-bold text-center">
-                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl">
-                            <span class="block text-xl font-black text-slate-900">${pipeline.approval_rate_pct}%</span>
-                            <span class="text-[10px] text-slate-500 uppercase block mt-0.5">Automated Velocity Approvals</span>
-                        </div>
-                        <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl">
-                            <span class="block text-xl font-black text-amber-700">${pipeline.escalation_rate_pct}%</span>
-                            <span class="text-[10px] text-amber-600 uppercase block mt-0.5">Required VP-Level Floor Escalations</span>
-                        </div>
-                    </div>
-                </section>
+            // Section 6 risks and recommended actions
+            doc += "6. Strategic Risk Vectors & Corrective Actions\n";
+            if(risks.risks.length) {
+                risks.risks.forEach(r => {
+                    doc += `    [Category: ${r.category}]\n`;
+                    doc += `    Risk Parameter: ${r.risk}\n`;
+                    doc += `    Recommended Playbook: "${r.recommended_action}"\n\n`;
+                });
+            } else {
+                doc += "    No systematic risk escalation thresholds triggered for this category selection.\n";
+            }
 
-                <section class="space-y-2.5">
-                    <h3 class="text-base font-black text-slate-900 border-b-2 border-slate-900 pb-0.5 tracking-tight uppercase">6. Strategic Risk Vectors & Action Items</h3>
-                    <div class="space-y-2.5">
-                        ${risks.risks.map(r => {
-                            return `
-                                <div class="border-l-4 border-red-600 bg-slate-50/80 p-3 rounded-r-xl text-xs">
-                                    <span class="font-bold text-slate-900 block text-sm mb-0.5">${r.category}</span>
-                                    <p class="text-slate-600 leading-relaxed mb-1.5">${r.risk}</p>
-                                    <div class="text-[11px] text-slate-800 bg-white p-2 border border-slate-200 rounded-lg">
-                                        <strong class="text-blue-600 uppercase tracking-wider text-[9px] block mb-0.5">Corrective Action Playbook</strong>
-                                        <span class="italic font-medium text-slate-700">"${r.recommended_action}"</span>
-                                    </div>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                </section>
-            `;
+            doc += "─".repeat(72) + "\n";
+            doc += "  End of QBR Draft — Review before distribution\n";
+            doc += "─".repeat(72) + "\n";
 
-            document.getElementById("canvasReportContent").innerHTML = elementContentLayoutMarkup;
-            printTerminalStream("Local Executive Summary Draft written successfully without diagnostic compilation errors.", "text-emerald-400 font-bold");
+            // Assign text values
+            rawTargetNarrativeOutputText = doc;
+            
+            // Format bold text strings dynamically inside terminal view layer matching regex print_qbr logic
+            let innerContentMarkup = doc
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/([0-9]+\.\s[A-Za-z\s&]+)/g, '<span class="text-blue-400 font-bold">$1</span>')
+                .replace(/(QUARTERLY BUSINESS REVIEW [^\n]*)/g, '<span class="text-cyan-400 font-bold">$1</span>');
+
+            workspace.innerHTML = `<pre class="whitespace-pre-wrap leading-relaxed tracking-wide text-slate-300 font-terminal text-[11px]">${innerContentMarkup}</pre>`;
+            appendConsoleLine("✓ Local raw terminal draft populated onto workspace canvas neatly.", "term-green term-bold");
         }
 
         function exportToTextFile() {
-            if(!compilationTargetOutputText) {
-                alert("Please initialize an agent runtime pipeline selection sequence first to populate content vectors.");
+            if(!rawTargetNarrativeOutputText) {
+                alert("Please initialize an agent pipeline execution loop sequence first to gather text arrays.");
                 return;
             }
-            const linkElement = document.createElement("a");
-            const filePayload = new Blob([compilationTargetOutputText], { type: 'text/plain;charset=utf-8' });
-            linkElement.href = URL.createObjectURL(filePayload);
-            linkElement.download = "autonomous_qbr_executive_assessment.txt";
-            document.body.appendChild(linkElement);
-            linkElement.click();
-            document.body.removeChild(linkElement);
+            const link = document.createElement("a");
+            const file = new Blob([rawTargetNarrativeOutputText], { type: 'text/plain;charset=utf-8' });
+            link.href = URL.createObjectURL(file);
+            link.download = `qbr_canvas_terminal_export.txt`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
     </script>
 </body>
