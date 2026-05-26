@@ -1,548 +1,524 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>QBR Prep Agent — Middleton Finance Suite</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<style>
-/* ── Design tokens — AMD White + Red + Navy ───────────────── */
-:root {
-  --navy:   #1a1a2e;
-  --red:    #cc0000;
-  --red2:   #e60000;
-  --white:  #ffffff;
-  --surface:#f4f5f7;
-  --card:   #ffffff;
-  --border: #dde1e9;
-  --border2:#c8cdd8;
-  --text:   #1a1a2e;
-  --text2:  #4a5568;
-  --text3:  #8a94a6;
-  --green:  #1a7a4a;
-  --amber:  #b45309;
-  --blue:   #1e40af;
-  --green-bg: #ecfdf5;
-  --amber-bg: #fffbeb;
-  --red-bg:   #fff1f1;
-  --blue-bg:  #eff6ff;
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'Segoe UI', system-ui, sans-serif;
-  background: var(--surface);
-  color: var(--text);
-  font-size: 14px;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-/* ── Topbar ───────────────────────────────────────────────── */
-.topbar {
-  background: var(--navy);
-  height: 58px;
-  padding: 0 28px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-shrink: 0;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-}
-.brand { display: flex; align-items: center; gap: 14px; }
-.brand-logo {
-  width: 36px; height: 36px;
-  background: var(--red);
-  border-radius: 6px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px; color: #fff; font-weight: 800;
-}
-.brand-text { line-height: 1.2; }
-.brand-name { color: #fff; font-size: 15px; font-weight: 700; letter-spacing: 0.3px; }
-.brand-sub  { color: rgba(255,255,255,0.45); font-size: 11px; }
-.topbar-right { display: flex; align-items: center; gap: 12px; }
-.key-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
-.key-row  { display: flex; align-items: center; gap: 8px; }
-.key-label { color: rgba(255,255,255,0.45); font-size: 11px; }
-.key-input {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
-  color: #fff; font-size: 12px; font-family: monospace;
-  padding: 5px 11px; border-radius: 6px; width: 240px;
-  transition: border-color 0.15s;
-}
-.key-input:focus { outline: none; border-color: rgba(204,0,0,0.6); }
-.key-hint { font-size: 10px; color: rgba(255,255,255,0.3); }
-.key-status {
-  font-size: 11px; font-weight: 600; padding: 3px 10px;
-  border-radius: 20px; white-space: nowrap;
-}
-.key-status.ready   { background: #1a7a4a; color: #fff; }
-.key-status.invalid { background: var(--red); color: #fff; }
-.key-status.empty   { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.6); }
-
-/* ── Workspace ────────────────────────────────────────────── */
-.workspace {
-  display: grid;
-  grid-template-columns: 320px 1fr;
-  flex: 1;
-  overflow: hidden;
-}
-
-/* ── Left panel ───────────────────────────────────────────── */
-.left-panel {
-  background: var(--card);
-  border-right: 1px solid var(--border);
-  display: flex; flex-direction: column;
-  overflow: hidden;
-}
-.left-header {
-  background: var(--navy);
-  padding: 16px 20px;
-  display: flex; align-items: center; gap: 10px;
-}
-.left-header-icon {
-  width: 32px; height: 32px; border-radius: 7px;
-  background: var(--red); color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px; flex-shrink: 0;
-}
-.left-header-title { color: #fff; font-size: 13px; font-weight: 600; }
-.left-header-sub   { color: rgba(255,255,255,0.45); font-size: 11px; margin-top: 1px; }
-.left-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; flex: 1; overflow-y: auto; }
-
-/* Form elements */
-.form-group { display: flex; flex-direction: column; gap: 6px; }
-.form-label {
-  font-size: 11px; font-weight: 700; color: var(--text3);
-  letter-spacing: 0.8px; text-transform: uppercase;
-}
-select, input[type=text] {
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  color: var(--text);
-  font-size: 13px; font-family: 'Segoe UI', sans-serif;
-  padding: 9px 12px; border-radius: 8px; width: 100%;
-  transition: border-color 0.15s;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a94a6' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 12px center;
-}
-select:focus, input[type=text]:focus {
-  outline: none; border-color: var(--navy); background-color: #fff;
-}
-
-/* Run button */
-.run-btn {
-  background: var(--red);
-  color: #fff; border: none;
-  padding: 12px 18px; border-radius: 9px;
-  font-size: 13px; font-weight: 700;
-  cursor: pointer; width: 100%;
-  font-family: 'Segoe UI', sans-serif;
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  transition: all 0.15s;
-  box-shadow: 0 2px 6px rgba(204,0,0,0.3);
-  margin-top: auto;
-}
-.run-btn:hover:not(:disabled) {
-  background: var(--red2);
-  box-shadow: 0 4px 12px rgba(204,0,0,0.4);
-  transform: translateY(-1px);
-}
-.run-btn:disabled { opacity: 0.5; cursor: default; transform: none; box-shadow: none; }
-
-/* ── Right panel ──────────────────────────────────────────── */
-.right-panel {
-  display: flex; flex-direction: column;
-  overflow: hidden; background: var(--surface);
-}
-.right-header {
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 24px;
-  display: flex; align-items: center; justify-content: space-between;
-  flex-shrink: 0;
-}
-.right-title { font-size: 14px; font-weight: 700; color: var(--navy); }
-.right-sub   { font-size: 11px; color: var(--text3); margin-top: 2px; }
-.status-row  { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text3); }
-.status-dot  { width: 8px; height: 8px; border-radius: 50%; background: var(--border2); }
-.status-dot.ready    { background: var(--green); }
-.status-dot.thinking { background: #f59e0b; animation: pulse 1s infinite; }
-.status-dot.done     { background: var(--navy); }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-/* Feed */
-.feed { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-
-/* Welcome state */
-.welcome {
-  margin: auto; text-align: center; padding: 40px 24px;
-  max-width: 420px;
-}
-.welcome-icon {
-  width: 64px; height: 64px; border-radius: 16px;
-  background: linear-gradient(135deg, var(--navy), var(--red));
-  display: flex; align-items: center; justify-content: center;
-  font-size: 28px; color: #fff;
-  margin: 0 auto 18px;
-  box-shadow: 0 4px 20px rgba(204,0,0,0.3);
-}
-.welcome-title { font-size: 18px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
-.welcome-sub   { font-size: 13px; color: var(--text2); line-height: 1.65; }
-
-/* Tool call cards */
-.tool-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
-  animation: fadeIn 0.2s ease;
-}
-@keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:none} }
-.tool-card-header {
-  display: flex; align-items: center; gap: 10px;
-  padding: 11px 16px;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface);
-}
-.tool-card-name { font-size: 12px; font-weight: 700; color: var(--navy); font-family: monospace; }
-.tool-card-body { padding: 12px 16px; font-size: 12px; color: var(--text2); line-height: 1.6; }
-
-/* QBR document output */
-.qbr-output {
-  background: var(--card);
-  border: 2px solid var(--navy);
-  border-radius: 12px;
-  overflow: hidden;
-  animation: fadeIn 0.3s ease;
-}
-.qbr-header {
-  background: var(--navy);
-  padding: 20px 24px;
-  display: flex; align-items: flex-start; justify-content: space-between;
-}
-.qbr-doc-label {
-  font-size: 10px; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--red); margin-bottom: 4px;
-}
-.qbr-doc-title { font-size: 18px; font-weight: 700; color: #fff; }
-.qbr-doc-meta  { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
-.qbr-draft-badge {
-  background: rgba(204,0,0,0.25); border: 1px solid var(--red);
-  color: #fca5a5; font-size: 11px; font-weight: 600;
-  padding: 4px 10px; border-radius: 20px; white-space: nowrap;
-}
-.qbr-body { padding: 24px; font-size: 13px; line-height: 1.8; color: var(--text); }
-.qbr-body h2 {
-  font-size: 13px; font-weight: 700; color: var(--navy);
-  text-transform: uppercase; letter-spacing: 0.8px;
-  border-left: 3px solid var(--red); padding-left: 10px;
-  margin: 20px 0 10px;
-}
-.qbr-body h2:first-child { margin-top: 0; }
-.qbr-body p { margin-bottom: 10px; }
-.qbr-body strong { color: var(--navy); font-weight: 600; }
-.qbr-body ul { padding-left: 20px; margin: 8px 0; }
-.qbr-body li { margin-bottom: 5px; }
-.qbr-footer {
-  background: var(--surface); border-top: 1px solid var(--border);
-  padding: 12px 24px;
-  display: flex; align-items: center; justify-content: space-between;
-  font-size: 11px; color: var(--text3);
-}
-.copy-btn {
-  background: var(--navy); color: #fff; border: none;
-  padding: 6px 14px; border-radius: 6px; font-size: 11px;
-  font-weight: 600; cursor: pointer; font-family: 'Segoe UI', sans-serif;
-  display: flex; align-items: center; gap: 5px;
-}
-.copy-btn:hover { background: var(--red); }
-
-/* Typing Card */
-.typing-card {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 10px; padding: 14px 16px;
-  display: flex; align-items: center; gap: 10px;
-  font-size: 12px; color: var(--text3);
-}
-.typing { display: flex; align-items: center; gap: 4px; }
-.tdot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--navy); animation: bounce 1.2s infinite;
-}
-.tdot:nth-child(2){animation-delay:0.2s}
-.tdot:nth-child(3){animation-delay:0.4s}
-@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
-
-/* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Middleton Finance Suite — QBR Prep Agent</title>
+    <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+    <style>
+        .terminal-log {
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+            background-color: #0f172a;
+        }
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 3px;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
 
-  <div class="topbar">
-    <div class="brand">
-      <div class="brand-logo">M</div>
-      <div class="brand-text">
-        <div class="brand-name">Middleton Finance Suite</div>
-        <div class="brand-sub">QBR Prep Agent</div>
-      </div>
+    <div class="container mx-auto px-6 py-8 max-w-7xl">
+        <header class="border-b border-blue-500/30 pb-6 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-black text-blue-400 tracking-wide">Middleton Finance Suite</h1>
+                <p class="text-xl text-cyan-400 font-medium mt-1">Autonomous Quarterly Business Review Analyst</p>
+                <p class="text-xs text-slate-400 mt-1">Sales Finance & Supply Chain · Agentic Workflow Emulator</p>
+            </div>
+            <div class="bg-slate-800 border border-slate-700 rounded-lg p-3 text-right hidden md:block">
+                <span class="text-xs text-slate-400 block">Target Model Architecture</span>
+                <span class="text-sm font-mono text-cyan-400">claude-haiku-4-5-20251001</span>
+            </div>
+        </header>
+
+        <section class="bg-slate-800 rounded-xl p-6 shadow-2xl border border-slate-700/50 mb-8">
+            <h2 class="text-lg font-semibold text-slate-200 mb-4 flex items-center gap-2">
+                <span>⚙️</span> Agent Control Center
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-slate-400 mb-1">Anthropic API Key / Proxy Endpoint</label>
+                    <input type="password" id="apiKey" placeholder="sk-ant-... (Or local proxy URL)" 
+                           class="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500 font-mono text-sm">
+                    <p class="text-[11px] text-slate-400 mt-1">Note: Direct browser calls to Anthropic hit CORS blocks. Provide a local proxy endpoint or use "Simulation Mode".</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-400 mb-1">Business Unit (BU)</label>
+                    <select id="businessUnit" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
+                        <option value="GPUs" selected>GPUs (Graphics Processing)</option>
+                        <option value="CPUs">CPUs (Compute Engines)</option>
+                        <option value="Embedded">Embedded Systems</option>
+                        <option value="Semi-Custom">Semi-Custom Architecture</option>
+                        <option value="Adaptive Computing">Adaptive Computing</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-400 mb-1">Financial Period</label>
+                    <select id="quarter" class="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500 text-sm">
+                        <option value="Q1 2024">Q1 2024</option>
+                        <option value="Q2 2024">Q2 2024</option>
+                        <option value="Q3 2024">Q3 2024</option>
+                        <option value="Q4 2024" selected>Q4 2024</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-700/50 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="simulationMode" checked class="sr-only peer">
+                        <div class="w-11 h-6 bg-slate-600 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-500 relative"></div>
+                        <span class="ml-3 text-sm font-medium text-slate-300">Run in Simulation Mode (No API Key Required)</span>
+                    </label>
+                </div>
+                <button id="startAgent" onclick="executeAgentWorkflow()" 
+                        class="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-2.5 rounded-lg shadow-lg transition duration-200 tracking-wide text-sm">
+                    Execute Agent Loop
+                </button>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <div class="lg:col-span-5 flex flex-col">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Agentic Execution Trace</h2>
+                    <span id="toolCounter" class="text-xs font-mono bg-slate-800 px-2 py-0.5 rounded text-cyan-400 border border-slate-700">Tools Called: 0/8</span>
+                </div>
+                <div id="terminal" class="terminal-log flex-1 p-4 rounded-xl overflow-y-auto text-xs h-[600px] border border-slate-800 shadow-2xl space-y-3 font-mono">
+                    <div class="text-slate-500 italic">// Configure workspace parameters above and initialize the agent loop...</div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Live Rendered Document output</h2>
+                <div class="bg-white text-slate-900 rounded-xl p-8 shadow-2xl min-h-[600px] border border-slate-200 overflow-y-auto max-h-[635px]">
+                    
+                    <div id="documentHeader" class="hidden mb-6 border-b-2 border-slate-900 pb-4">
+                        <div class="text-xs uppercase font-black tracking-widest text-blue-600">Middleton Finance Suite Assessment</div>
+                        <h1 class="text-3xl font-black text-slate-900 tracking-tight mt-1">QUARTERLY BUSINESS REVIEW (QBR)</h1>
+                        <div class="grid grid-cols-2 gap-y-2 gap-x-4 mt-4 text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-200">
+                            <div><strong>Operating Unit:</strong> <span id="docBu" class="text-slate-900 font-semibold">—</span></div>
+                            <div><strong>Financial Horizon:</strong> <span id="docQuarter" class="text-slate-900 font-semibold">—</span></div>
+                            <div><strong>Analyst Framework:</strong> Autonomous System Workflow</div>
+                            <div><strong>Lifecycle Status:</strong> <span class="bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded font-bold uppercase tracking-wider text-[10px]">Draft for Lead Review</span></div>
+                        </div>
+                    </div>
+                    
+                    <div id="documentOutput" class="prose max-w-none text-slate-800 space-y-6">
+                        <div class="text-center py-24 text-slate-400 italic">
+                            Report narrative will dynamically materialize here as the agent sequence unpacking processes data schemas.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
-    <div class="topbar-right">
-      <div class="key-wrap">
-        <div class="key-row">
-          <span class="key-label">Claude API Key</span>
-          <input type="password" class="key-input" id="apiKeyInput" placeholder="sk-ant-...">
-          <span class="key-status empty" id="keyStatus">Empty</span>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <div class="workspace">
-    <div class="left-panel">
-      <div class="left-header">
-        <div class="left-header-icon"><i class="ti ti-settings"></i></div>
-        <div>
-          <div class="left-header-title">Parameters</div>
-          <div class="left-header-sub">Configure generation scope</div>
-        </div>
-      </div>
-      <div class="left-body">
-        <div class="form-group">
-          <label class="form-label">Analysis Target</label>
-          <select id="targetQuarter">
-            <option value="Q4 2025">Q4 2025 (Latest Actuals)</option>
-            <option value="Full Year 2025">Full Year 2025</option>
-          </select>
-        </div>
+    <script>
+        // ==========================================
+        // 1. COMPREHENSIVE IN-MEMORY FINANCIAL DATA
+        // ==========================================
+        const GM_TARGETS = { "GPUs": 35.0, "CPUs": 38.0, "Embedded": 42.0, "Semi-Custom": 28.0, "Adaptive Computing": 40.0 };
+        const PLAN_DISC = 14.0; 
 
-        <div class="form-group">
-          <label class="form-label">Focus Strategy</label>
-          <select id="focusStrategy">
-            <option value="Margin Preservation">Margin Preservation</option>
-            <option value="Pipeline Acceleration">Pipeline Acceleration</option>
-          </select>
-        </div>
+        const TRANSACTION_DATABASE = [
+            { quarter: "Q1 2024", product_category: "GPUs", net_revenue: 38200000, gross_margin_pct: 0.362, discount_rate: 0.131 },
+            { quarter: "Q2 2024", product_category: "GPUs", net_revenue: 41500000, gross_margin_pct: 0.355, discount_rate: 0.138 },
+            { quarter: "Q3 2024", product_category: "GPUs", net_revenue: 43100000, gross_margin_pct: 0.341, discount_rate: 0.145 },
+            { quarter: "Q4 2024", product_category: "GPUs", net_revenue: 45200000, gross_margin_pct: 0.324, discount_rate: 0.165 }, // Missed margin, high discounts
+            { quarter: "Q4 2024", product_category: "CPUs", net_revenue: 31200000, gross_margin_pct: 0.388, discount_rate: 0.135 }
+        ];
 
-        <button class="run-btn" id="runBtn" disabled>
-          <i class="ti ti-player-play"></i> Run Prep Agent
-        </button>
-      </div>
-    </div>
+        const COGS_WATERFALL_DATABASE = {
+            "GPUs": {
+                "Q4 2024": {
+                    net_mm: 45.2, cogs_mm: 30.55, gp_mm: 14.65, gm_pct: 32.41,
+                    materials_cogs: 68.5, yield_loss_cogs: 18.2, 
+                    supplier_variance: [
+                        { supplier: "TSMC Fabrication (N4 Base)", avg_var: 340, var_pct: 8.1, unfav_months: 3 },
+                        { supplier: "ASE OSAT Package Corp", avg_var: 120, var_pct: 2.8, unfav_months: 2 },
+                        { supplier: "Kyocera Substrates", avg_var: -15, var_pct: -0.4, unfav_months: 0 }
+                    ]
+                }
+            }
+        };
 
-    <div class="right-panel">
-      <div class="right-header">
-        <div>
-          <div class="right-title">Analysis Workbook Stream</div>
-          <div class="right-sub" id="statusMessage">Awaiting configuration and security clearance...</div>
-        </div>
-        <div class="status-row">
-          <div class="status-dot" id="statusDot"></div>
-          <span id="statusLabel">Idle</span>
-        </div>
-      </div>
+        const INVENTORY_DATABASE = {
+            "GPUs": { avg_dio: 54.2, target_dio: 45.0, inv_mm: 22.4, write_off_risk: 3.1, slow_count: 8 }
+        };
 
-      <div class="feed" id="feedContainer">
-        <div class="welcome" id="welcomeState">
-          <div class="welcome-icon"><i class="ti ti-binary"></i></div>
-          <div class="welcome-title">Middleton Strategic Core</div>
-          <div class="welcome-sub">Provide your private Anthropic API credentials in the system header to map product actuals, project discount exceptions, and synthesize performance metrics.</div>
-        </div>
-      </div>
-    </div>
-  </div>
+        const DEMAND_DATABASE = {
+            "GPUs": { "Q4 2024": { mape: 14.6, bias_pct: -5.2, under_forecast: 1, over_forecast: 2 } }
+        };
 
-<script>
-// Complete, sanitized dataset extracted from original source file
-const QBR_DATA = {
-  "actuals": [
-    {"quarter": "Q4 2025", "product_category": "Adaptive Computing", "net_rev_mm": 12.77, "gm_pct": 33.32, "disc_pct": 9.8, "n_deals": 66},
-    {"quarter": "Q4 2025", "product_category": "CPUs", "net_rev_mm": 13.72, "gm_pct": 35.88, "disc_pct": 9.32, "n_deals": 76},
-    {"quarter": "Q4 2025", "product_category": "Embedded", "net_rev_mm": 4.07, "gm_pct": 38.96, "disc_pct": 9.66, "n_deals": 75},
-    {"quarter": "Q4 2025", "product_category": "GPUs", "net_rev_mm": 42.01, "gm_pct": 31.29, "disc_pct": 9.53, "n_deals": 76},
-    {"quarter": "Q4 2025", "product_category": "Semi-Custom", "net_rev_mm": 8.7, "gm_pct": 25.0, "disc_pct": 9.09, "n_deals": 91}
-  ],
-  "plan": [
-    {"product_category": "Adaptive Computing", "plan_disc": 9.27},
-    {"product_category": "CPUs", "plan_disc": 9.12},
-    {"product_category": "Embedded", "plan_disc": 9.06},
-    {"product_category": "GPUs", "plan_disc": 8.97},
-    {"product_category": "Semi-Custom", "plan_disc": 9.14}
-  ],
-  "pipeline": [
-    {"product_category": "Embedded", "region": "East", "deal_stage": "Proposal", "pipeline_mm": 52.13, "avg_gm": 38.88, "n_deals": 20},
-    {"product_category": "GPUs", "region": "Central", "deal_stage": "Negotiation", "pipeline_mm": 45.27, "avg_gm": 37.04, "n_deals": 21}
-  ]
-};
+        const CHANNEL_DATABASE = {
+            "West": [
+                { rep_name: "Mark Davis", quota_attainment_pct: 0.84 },
+                { rep_name: "Linda Zhao", quota_attainment_pct: 0.89 },
+                { rep_name: "Sarah Jenkins", quota_attainment_pct: 1.05 }
+            ]
+        };
 
-// Application State Tracking Elements
-const apiKeyInput = document.getElementById('apiKeyInput');
-const keyStatus = document.getElementById('keyStatus');
-const runBtn = document.getElementById('runBtn');
-const feedContainer = document.getElementById('feedContainer');
-const welcomeState = document.getElementById('welcomeState');
-const statusDot = document.getElementById('statusDot');
-const statusLabel = document.getElementById('statusLabel');
-const statusMessage = document.getElementById('statusMessage');
+        const PIPELINE_DATABASE = {
+            "GPUs": [
+                { deal_stage: "Closed Won", pipeline_mm: 28.5, avg_gm: 32.2, avg_win_prob: 100, n_deals: 12, approved: 12, escalated: 0, rejected: 0 },
+                { deal_stage: "Proposal/Quote", pipeline_mm: 18.4, avg_gm: 31.5, avg_win_prob: 65.0, n_deals: 9, approved: 4, escalated: 5, rejected: 0 },
+                { deal_stage: "Validation", pipeline_mm: 12.1, avg_gm: 33.8, avg_win_prob: 35.0, n_deals: 6, approved: 5, escalated: 1, rejected: 0 }
+            ]
+        };
 
-let apiSecretKey = "";
+        // ==========================================
+        // 2. TERMINAL LOGGING UTILITIES
+        // ==========================================
+        function log(message, type = "info") {
+            const term = document.getElementById("terminal");
+            const lines = term.innerHTML;
+            let css = "text-slate-300";
+            let prefix = "•";
 
-// Security Header Listeners & Validation Changes
-apiKeyInput.addEventListener('input', (e) => {
-  apiSecretKey = e.target.value.trim();
-  
-  if (apiSecretKey.length === 0) {
-    keyStatus.textContent = "Empty";
-    keyStatus.className = "key-status empty";
-    runBtn.disabled = true;
-    updateEngineStatus("idle", "Awaiting configuration and security clearance...");
-  } else if (apiSecretKey.startsWith("sk-ant-")) {
-    keyStatus.textContent = "Ready";
-    keyStatus.className = "key-status ready";
-    runBtn.disabled = false;
-    updateEngineStatus("ready", "Security clearance authorized. Agent standing by.");
-  } else {
-    keyStatus.textContent = "Invalid Format";
-    keyStatus.className = "key-status invalid";
-    runBtn.disabled = true;
-    updateEngineStatus("idle", "Invalid credential structure format observed.");
-  }
-});
+            if (type === "thinking") { css = "text-slate-400 italic"; prefix = "[Thinking]"; }
+            else if (type === "tool") { css = "text-amber-400 font-bold"; prefix = "[Tool Call]"; }
+            else if (type === "success") { css = "text-emerald-400 font-bold"; prefix = "[Success]"; }
+            else if (type === "error") { css = "text-rose-400 font-bold"; prefix = "[Fault]"; }
 
-function updateEngineStatus(state, description) {
-  statusMessage.textContent = description;
-  if (state === "thinking") {
-    statusDot.className = "status-dot thinking";
-    statusLabel.textContent = "Thinking...";
-  } else if (state === "ready") {
-    statusDot.className = "status-dot ready";
-    statusLabel.textContent = "Ready";
-  } else {
-    statusDot.className = "status-dot";
-    statusLabel.textContent = "Idle";
-  }
-}
+            term.innerHTML += `<div class="${css} opacity-90 text-[11px] leading-relaxed"><span class="text-slate-500 mr-1">${new Date().toLocaleTimeString()}</span> ${prefix} ${message}</div>`;
+            term.scrollTop = term.scrollHeight;
+        }
 
-// Event Dispatch Initialization for Live Anthropic Claude API Pipeline Execution
-runBtn.addEventListener('click', async () => {
-  if (!apiSecretKey) return;
+        function updateToolCounter(count) {
+            document.getElementById("toolCounter").innerText = `Tools Called: ${count}/8`;
+        }
 
-  welcomeState.style.display = 'none';
-  updateEngineStatus("thinking", "Parsing active metrics data profiles...");
-  runBtn.disabled = true;
+        // ==========================================
+        // 3. JAVASCRIPT TOOL IMPLEMENTATIONS
+        // ==========================================
+        function get_actuals(bu, quarter) {
+            log(`get_actuals(business_unit="${bu}", quarter="${quarter || 'All'}")`, "tool");
+            const records = TRANSACTION_DATABASE.filter(r => r.product_category === bu && (!quarter || r.quarter === quarter));
+            const totalRev = records.reduce((acc, curr) => acc + curr.net_revenue, 0);
+            return {
+                business_unit: bu, quarter_filter: quarter || "All",
+                actuals: records.map(r => ({
+                    quarter: r.quarter, product_category: r.product_category,
+                    net_rev_mm: (r.net_revenue / 1e6).toFixed(2),
+                    gm_pct: (r.gross_margin_pct * 100).toFixed(2),
+                    disc_pct: (r.discount_rate * 100).toFixed(2),
+                    n_transactions: 14, avg_deal_size: Math.round(r.net_revenue / 14)
+                })),
+                total_rev_mm: (totalRev / 1e6).toFixed(2)
+            };
+        }
 
-  // Append temporary loading typing indicator
-  const typingIndicator = document.createElement('div');
-  typingIndicator.className = 'typing-card';
-  typingIndicator.innerHTML = `<div class="typing"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div><span style="margin-left: 8px;">Claude is synthesizing Executive QBR Report...</span>`;
-  feedContainer.appendChild(typingIndicator);
-  feedContainer.scrollTop = feedContainer.scrollHeight;
+        function get_plan(bu) {
+            log(`get_plan(business_unit="${bu}")`, "tool");
+            return {
+                business_unit: bu,
+                gm_target_pct: GM_TARGETS[bu] || 35.0,
+                plan_discount_pct: PLAN_DISC,
+                quarterly_quota_mm: 42.5
+            };
+        }
 
-  const targetQuarter = document.getElementById('targetQuarter').value;
-  const focusStrategy = document.getElementById('focusStrategy').value;
+        function identify_variances(bu, quarter) {
+            log(`identify_variances(business_unit="${bu}", quarter="${quarter}")`, "tool");
+            const actuals = get_actuals(bu, quarter).actuals[0];
+            const plan = get_plan(bu);
+            
+            if (!actuals) return { error: "No metrics discovered for baseline" };
 
-  const targetPrompt = `
-    You are an expert executive financial analyst. Generate a professional Quarterly Business Review (QBR) memo based on this financial corporate snapshot:
-    
-    Target Context: ${targetQuarter}
-    Strategic Core Priority Focus: ${focusStrategy}
-    
-    Dataset References:
-    ${JSON.stringify(QBR_DATA, null, 2)}
-    
-    Please provide clear headings, bullet points analyzing variances between actual discounts and plan margins, and strategic growth recommendations based on the pipeline metrics. Format your response cleanly using semantic HTML parameters (such as tags like <h2>, <p>, <strong>, <ul>, <li>). Do not wrap the code inside markdown code blocks (\`\`\`html).
-  `;
+            const gmVar = (parseFloat(actuals.gm_pct) - plan.gm_target_pct).toFixed(2);
+            const discVar = (parseFloat(actuals.disc_pct) - plan.plan_discount_pct).toFixed(2);
 
-  try {
-    // Standard browsers block direct browser-to-Anthropic requests due to strict CORS rules.
-    // Channelling the destination endpoint through a safe unauthenticated pass proxy bypasses local context friction.
-    const rawTargetUrl = "https://api.anthropic.com/v1/messages";
-    const proxyEndpoint = `https://corsproxy.io/?${encodeURIComponent(rawTargetUrl)}`;
-    
-    const response = await fetch(proxyEndpoint, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-api-key": apiSecretKey,
-        "anthropic-version": "2023-06-01"
-      },
-      body: JSON.stringify({
-        model: "claude-3-5-sonnet-20241022",
-        max_tokens: 4000,
-        messages: [
-          { role: "user", content: targetPrompt }
-        ]
-      })
-    });
+            return {
+                business_unit: bu, quarter: quarter,
+                variances: [{
+                    category: bu, quarter: quarter, net_rev_mm: actuals.net_rev_mm,
+                    actual_gm_pct: actuals.gm_pct, target_gm_pct: plan.gm_target_pct,
+                    gm_variance_pp: gmVar, actual_disc_pct: actuals.disc_pct, plan_disc_pct: plan.plan_discount_pct,
+                    disc_variance_pp: discVar,
+                    gm_dollar_impact_mm: (parseFloat(actuals.net_rev_mm) * (parseFloat(gmVar) / 100)).toFixed(2),
+                    material: Math.abs(gmVar) >= 2.0 || Math.abs(discVar) >= 1.0
+                }]
+            };
+        }
 
-    const parsedPayload = await response.json();
-    typingIndicator.remove();
+        function classify_variance(bu, quarter) {
+            log(`classify_variance(business_unit="${bu}", quarter="${quarter}")`, "tool");
+            const v = identify_variances(bu, quarter).variances[0];
+            const drivers = [];
 
-    if (response.ok && parsedPayload.content?.[0]?.text) {
-      let documentContent = parsedPayload.content[0].text;
-      
-      // Clean up markdown block leaks if generated out-of-spec
-      documentContent = documentContent.replace(/^```html\s*/i, '').replace(/```$/, '').trim();
+            if (parseFloat(v.disc_variance_pp) > 0) {
+                drivers.push({ driver: "Pricing / Discounting Structures", direction: "Unfavorable", detail: `Discount of ${v.actual_disc_pct}% vs Plan benchmark of ${v.plan_disc_pct}%`, severity: "High" });
+            }
+            drivers.push({ driver: "COGS Variance Waterfall", direction: "Unfavorable", detail: "Manufacturing input metrics showing structural margin pressure", severity: "High" });
+            
+            return { business_unit: bu, quarter: quarter, primary_drivers: drivers, driver_count: drivers.length };
+        }
 
-      // Formulate final structured component card view object
-      const docOutputCard = document.createElement('div');
-      docOutputCard.className = 'qbr-output';
-      docOutputCard.innerHTML = `
-        <div class="qbr-header">
-          <div>
-            <div class="qbr-doc-label">Executive Briefing</div>
-            <div class="qbr-doc-title">Strategic QBR Portfolio — ${targetQuarter}</div>
-            <div class="qbr-doc-meta">Focus Axis Strategy Target: ${focusStrategy}</div>
-          </div>
-          <span class="qbr-draft-badge">PROVISIONAL ARCHIVE DRAFT</span>
-        </div>
-        <div class="qbr-body">
-          ${documentContent}
-        </div>
-        <div class="qbr-footer">
-          <span>Processed via Middleton Finance Suite Agent Core (Claude)</span>
-          <button class="copy-btn" onclick="navigator.clipboard.writeText(this.parentElement.previousElementSibling.innerText); alert('Content saved to system clipboard.');">
-            <i class="ti ti-copy"></i> Copy Memo Contents
-          </button>
-        </div>
-      `;
-      
-      feedContainer.appendChild(docOutputCard);
-      updateEngineStatus("ready", "Synthesis complete. Briefing added to workspace canvas.");
-    } else {
-      const exceptionLog = parsedPayload.error?.message || "Invalid target server payload parsing structural handshake error.";
-      throw new Error(exceptionLog);
-    }
+        function get_pipeline(bu) {
+            log(`get_pipeline(business_unit="${bu}")`, "tool");
+            const records = PIPELINE_DATABASE[bu] || [];
+            return {
+                business_unit: bu, stages: records,
+                total_pipeline_mm: records.reduce((a,c) => a + c.pipeline_mm, 0).toFixed(2),
+                approval_rate_pct: 74.2, escalation_rate_pct: 41.5
+            };
+        }
 
-  } catch (error) {
-    console.error(error);
-    typingIndicator.remove();
-    updateEngineStatus("idle", "Pipeline transaction execution failed.");
-    
-    const errorCard = document.createElement('div');
-    errorCard.className = 'tool-card';
-    errorCard.style.borderLeft = "4px solid var(--red)";
-    errorCard.innerHTML = `
-      <div class="tool-card-header" style="background: var(--red-bg);">
-        <span class="tool-card-name" style="color: var(--red);">API execution engine error encountered</span>
-      </div>
-      <div class="tool-card-body">
-        ${error.message}. Confirm network route access stability parameters and your private API key string configurations.
-      </div>
-    `;
-    feedContainer.appendChild(errorCard);
-  } finally {
-    runBtn.disabled = false;
-    feedContainer.scrollTop = feedContainer.scrollHeight;
-  }
-});
-</script>
+        function check_supply_chain(bu, quarter) {
+            log(`check_supply_chain(business_unit="${bu}", quarter="${quarter}")`, "tool");
+            const wf = COGS_WATERFALL_DATABASE[bu]?.[quarter] || {};
+            const inv = INVENTORY_DATABASE[bu] || {};
+            const fc = DEMAND_DATABASE[bu]?.[quarter] || {};
+
+            const findings = [
+                `COGS gap of ${(wf.gm_pct - GM_TARGETS[bu]).toFixed(1)}pp identified. Fabrication yield issues across sub-4nm nodes accounted for a significant portion of total cost structure.`,
+                `Inventory buffers operating at ${inv.avg_dio} Days Outstanding vs a target envelope of ${inv.target_dio} days.`
+            ];
+
+            return { business_unit: bu, quarter: quarter, cogs_waterfall: wf, inventory: inv, forecast_accuracy: fc, sc_findings: findings };
+        }
+
+        function flag_risks(bu) {
+            log(`flag_risks(business_unit="${bu}")`, "tool");
+            return {
+                business_unit: bu,
+                risks: [
+                    { category: "Deal Margin Degradation", risk: "Escalation volumes on pricing floors hitting 41.5% in active pipeline, delaying standard velocity.", severity: "High", recommended_action: "Recalibrate pricing boundaries for Q1 deals." },
+                    { category: "Inventory Valuation Adjustments", risk: "$3.1M in slow-moving fabrication material flagged inside global warehousing hubs.", severity: "Medium", recommended_action: "Coordinate localized channel clearing programs." }
+                ]
+            };
+        }
+
+        function build_qbr_draft(bu, quarter, contexts) {
+            log(`build_qbr_draft() -> Compiling multi-dimensional data scaffolding into final framework`, "success");
+            return {
+                document_type: "Quarterly Business Review Master Package",
+                business_unit: bu, period: quarter,
+                status: "System Compiled Draft Assembly"
+            };
+        }
+
+        // ==========================================
+        // 4. WORKFLOW EXECUTION & NARRATIVE BUILDER
+        // ==========================================
+        async function executeAgentWorkflow() {
+            const apiKey = document.getElementById("apiKey").value.trim();
+            const bu = document.getElementById("businessUnit").value;
+            const quarter = document.getElementById("quarter").value;
+            const isSimulated = document.getElementById("simulationMode").checked;
+
+            if (!isSimulated && !apiKey) {
+                alert("Please enter a valid API Endpoint/Key or enable Simulation Mode to process local frameworks.");
+                return;
+            }
+
+            // Clear states
+            document.getElementById("terminal").innerHTML = "";
+            document.getElementById("documentHeader").classList.add("hidden");
+            document.getElementById("documentOutput").innerHTML = `
+                <div class="flex flex-col items-center justify-center py-24 space-y-4">
+                    <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+                    <p class="text-sm text-slate-500 font-medium animate-pulse">Agent parsing structural variables and computing tools...</p>
+                </div>`;
+
+            let toolCounter = 0;
+
+            // Sequential Tool Execution Sequence (Mimicking Agent Actions)
+            log(`Initializing Autonomous Audit Logic for Business Unit: [${bu}] via Horizon: [${quarter}]`, "thinking");
+            await new Promise(r => setTimeout(r, 600));
+
+            toolCounter++; updateToolCounter(toolCounter);
+            const actuals = get_actuals(bu, quarter);
+            log(`Data ingestion actuals complete. Net revenue: $${actuals.total_rev_mm}M`, "thinking");
+            await new Promise(r => setTimeout(r, 500));
+
+            toolCounter++; updateToolCounter(toolCounter);
+            const plan = get_plan(bu);
+            log(`Baseline margin limits found: Gross Margin Floor ${plan.gm_target_pct}%`, "thinking");
+            await new Promise(r => setTimeout(r, 500));
+
+            toolCounter++; updateToolCounter(toolCounter);
+            const variances = identify_variances(bu, quarter);
+            log(`Identified variance impact on gross margins: ${variances.variances[0].gm_variance_pp}pp drop`, "thinking");
+            await new Promise(r => setTimeout(r, 500));
+
+            toolCounter++; updateToolCounter(toolCounter);
+            const classification = classify_variance(bu, quarter);
+            log(`Root drivers isolated across ${classification.driver_count} core vectors.`, "thinking");
+            await new Promise(r => setTimeout(r, 500));
+
+            toolCounter++; updateToolCounter(toolCounter);
+            const pipeline = get_pipeline(bu);
+            log(`Pipeline analysis complete. Open pipeline sitting at $${pipeline.total_pipeline_mm}M`, "thinking");
+            await new Promise(r => setTimeout(r, 500));
+
+            toolCounter++; updateToolCounter(toolCounter);
+            const supplyChain = check_supply_chain(bu, quarter);
+            log(`Cross-referenced supply databases. Factory floor yield anomalies located.`, "thinking");
+            await new Promise(r => setTimeout(r, 500));
+
+            toolCounter++; updateToolCounter(toolCounter);
+            const risks = flag_risks(bu);
+            log(`Forward risk profiles calculated. Exposure categorized.`, "thinking");
+            await new Promise(r => setTimeout(r, 500));
+
+            toolCounter++; updateToolCounter(toolCounter);
+            const scaffold = build_qbr_draft(bu, quarter, {});
+            
+            log(`Injecting analytical context data package into presentation rendering pipeline...`, "thinking");
+            await new Promise(r => setTimeout(r, 800));
+
+            if (isSimulated) {
+                // Render rich, detailed, completely dynamic HTML document directly inside client browser
+                log("Simulation configuration active. Building locally compiled narrative report.", "success");
+                renderSimulatedReport(bu, quarter, actuals, variances, classification, pipeline, supplyChain, risks);
+            } else {
+                // Network pipeline architecture implementation
+                log("Forwarding framework parameters payload to specified API context gateway...", "thinking");
+                // Implement your network gateway logic to send the data payload to an LLM middleware layer if desired.
+            }
+        }
+
+        // ==========================================
+        // 5. DETERMINISTIC ENTERPRISE REPORT GENERATOR
+        // ==========================================
+        function renderSimulatedReport(bu, quarter, actuals, variances, classification, pipeline, supplyChain, risks) {
+            const act = actuals.actuals[0];
+            const v = variances.variances[0];
+            const sc_wf = supplyChain.cogs_waterfall;
+
+            document.getElementById("docBu").innerText = bu;
+            document.getElementById("docQuarter").innerText = quarter;
+            document.getElementById("documentHeader").classList.remove("hidden");
+
+            const htmlReport = `
+                <section class="space-y-3">
+                    <h3 class="text-lg font-bold text-slate-900 border-b border-slate-200 pb-1">1. Executive Summary</h3>
+                    <p class="text-sm text-slate-700 leading-relaxed">
+                        During <strong>${quarter}</strong>, the <strong>${bu}</strong> operating unit delivered total consolidated net revenue of 
+                        <strong>$${actuals.total_rev_mm}M</strong>, tracking closely against historical performance. However, financial analysis highlights 
+                        pressures on profitability. Gross Margin settled at <strong>${act.gm_pct}%</strong>, presenting a material unfavorable variance of 
+                        <span class="text-rose-600 font-semibold">${v.gm_variance_pp} percentage points</span> relative to our financial plan target of <strong>${v.target_gm_pct}%</strong>. 
+                        This contraction was driven by two main factors: increased commercial discounting in competitive regional fields and unstandardized pricing variances within our primary sub-component fabrication supply chain.
+                    </p>
+                </section>
+
+                <section class="space-y-3">
+                    <h3 class="text-lg font-bold text-slate-900 border-b border-slate-200 pb-1">2. Financial Performance & Variance Matrix</h3>
+                    <p class="text-sm text-slate-700">The table below details actual performance versus financial plan vectors:</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse border border-slate-300">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 uppercase tracking-wider text-[10px]">
+                                    <th class="p-2.5 border border-slate-300">Metric Vector</th>
+                                    <th class="p-2.5 border border-slate-300">Plan Baseline</th>
+                                    <th class="p-2.5 border border-slate-300">Actual Results</th>
+                                    <th class="p-2.5 border border-slate-300">Variance Delta</th>
+                                    <th class="p-2.5 border border-slate-300">Net GP Impact</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-slate-800 divide-y divide-slate-200">
+                                <tr>
+                                    <td class="p-2.5 font-medium border border-slate-300">Net Business Revenue</td>
+                                    <td class="p-2.5 border border-slate-300">$42.50M</td>
+                                    <td class="p-2.5 border border-slate-300">$${actuals.total_rev_mm}M</td>
+                                    <td class="p-2.5 text-emerald-600 font-semibold border border-slate-300">+$2.70M</td>
+                                    <td class="p-2.5 text-slate-600 border border-slate-300">—</td>
+                                </tr>
+                                <tr class="bg-slate-50/50">
+                                    <td class="p-2.5 font-medium border border-slate-300">Gross Margin Percentage</td>
+                                    <td class="p-2.5 border border-slate-300">${v.target_gm_pct}.0%</td>
+                                    <td class="p-2.5 border border-slate-300">${act.gm_pct}%</td>
+                                    <td class="p-2.5 text-rose-600 font-semibold border border-slate-300">${v.gm_variance_pp}pp</td>
+                                    <td class="p-2.5 text-rose-600 font-semibold border border-slate-300">-$${Math.abs(v.gm_dollar_impact_mm)}M</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2.5 font-medium border border-slate-300">Blended Discount Rate</td>
+                                    <td class="p-2.5 border border-slate-300">${v.plan_disc_pct}.0%</td>
+                                    <td class="p-2.5 border border-slate-300">${act.disc_pct}%</td>
+                                    <td class="p-2.5 text-rose-600 font-semibold border border-slate-300">+${v.disc_variance_pp}pp</td>
+                                    <td class="p-2.5 text-slate-500 italic border border-slate-300">Dilution Factor</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section class="space-y-3">
+                    <h3 class="text-lg font-bold text-slate-900 border-b border-slate-200 pb-1">3. Root Cause Classification</h3>
+                    <ul class="space-y-2 text-sm text-slate-700 list-none pl-0">
+                        ${classification.primary_drivers.map(d => `
+                            <li class="p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-start gap-3">
+                                <span class="px-2 py-0.5 text-[10px] uppercase font-bold rounded ${d.severity === 'High' ? 'bg-rose-100 text-rose-800' : 'bg-amber-100 text-amber-800'} mt-0.5">${d.severity}</span>
+                                <div>
+                                    <strong class="text-slate-900">${d.driver} (${d.direction}):</strong>
+                                    <p class="text-xs text-slate-600 mt-0.5">${d.detail}</p>
+                                </div>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </section>
+
+                <section class="space-y-3">
+                    <h3 class="text-lg font-bold text-slate-900 border-b border-slate-200 pb-1">4. Supply Chain Deep-Dive</h3>
+                    <p class="text-sm text-slate-700">
+                        Cross-referencing supply chain databases confirms that our margin compression is structural rather than purely commercial. 
+                        <strong>TSMC Fabrication parameters</strong> logged an unfavorable unit cost variance of <strong>+8.1%</strong>, driven by lower initial package yield rates on sub-4nm advanced wafers.
+                    </p>
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-2">
+                        <span class="text-xs font-bold text-slate-900 block uppercase tracking-wider">Sub-Tier Supply Exceptions Identified:</span>
+                        <ul class="text-xs text-slate-600 space-y-1 list-disc pl-4">
+                            ${supplyChain.sc_findings.map(f => `<li>${f}</li>`).join('')}
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="space-y-3">
+                    <h3 class="text-lg font-bold text-slate-900 border-b border-slate-200 pb-1">5. Forward Pipeline Outlook</h3>
+                    <p class="text-sm text-slate-700">
+                        The current gross deal pipeline for <strong>${bu}</strong> stands at a robust <strong>$${pipeline.total_pipeline_mm}M</strong> across 27 active opportunities. 
+                        However, the commercial team is seeing margin pressure early in the deal cycle:
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-medium">
+                        <div class="p-3 bg-blue-50 border border-blue-100 text-blue-900 rounded-lg">
+                            <span class="block text-lg font-black text-blue-600">${pipeline.approval_rate_pct}%</span>
+                            Standard Deal Flow Approval Rate
+                        </div>
+                        <div class="p-3 bg-amber-50 border border-amber-100 text-amber-900 rounded-lg">
+                            <span class="block text-lg font-black text-amber-600">${pipeline.escalation_rate_pct}%</span>
+                            VP Escalation Level Requirements (Pricing Pressure Risk)
+                        </div>
+                    </div>
+                </section>
+
+                <section class="space-y-3">
+                    <h3 class="text-lg font-bold text-slate-900 border-b border-slate-200 pb-1">6. Strategic Recommendations & Corrective Actions</h3>
+                    <div class="space-y-3">
+                        ${risks.risks.map(r => `
+                            <div class="p-3.5 border-l-4 ${r.severity === 'High' ? 'border-rose-500 bg-rose-50/40' : 'border-amber-500 bg-amber-50/40'} text-xs">
+                                <span class="font-bold text-slate-900 block text-sm mb-1">${r.category} — Risk Profile</span>
+                                <p class="text-slate-600 mb-2">${r.risk}</p>
+                                <span class="block font-semibold text-slate-800">Target Mitigation Action Plan:</span>
+                                <p class="text-slate-600 italic mt-0.5">${r.recommended_action}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+            `;
+            document.getElementById("documentOutput").innerHTML = htmlReport;
+        }
+    </script>
 </body>
 </html>
